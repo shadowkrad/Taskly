@@ -1,6 +1,7 @@
 import React from 'react';
 import { getServiceRequests } from '@/lib/interventions';
 import { AdminDashboard } from '@/components/admin/AdminDashboard';
+import { LogoutButton } from '@/components/admin/LogoutButton';
 import { Wrench, Shield, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -51,13 +52,14 @@ export default async function AdminPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/#prenota"
             className="btn-taaaac px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition-all flex items-center gap-1.5"
           >
             + Nuova Prenotazione
           </Link>
+          <LogoutButton />
         </div>
       </div>
 
