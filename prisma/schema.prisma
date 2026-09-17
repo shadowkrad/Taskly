@@ -33,3 +33,45 @@ model Category {
   color     String   @default("#4f46e5")
   createdAt DateTime @default(now())
 }
+
+model ServiceRequest {
+  id            String       @id @default(cuid())
+  customerName  String
+  phone         String
+  email         String?
+  address       String
+  serviceType   String       // es. "Idraulica", "Elettrico", "Caldaie & Clima", "Serrature & Fabbro", "Pronto Intervento"
+  description   String
+  urgency       String       @default("ORDINARIO") // ORDINARIO | URGENTE | EMERGENZA
+  status        String       @default("IN_ATTESA") // IN_ATTESA | PIANIFICATO | IN_CORSO | COMPLETATO | ANNULLATO
+  preferredTime String?      // es. "Mattina (08:00 - 12:00)", "Pomeriggio (14:00 - 18:00)"
+  scheduledAt   DateTime?
+  estimatedCost Float?
+  finalCost     Float?
+  notes         String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  workReports   WorkReport[]
+
+  @@index([status])
+  @@index([urgency])
+}
+
+model WorkReport {
+  id                String         @id @default(cuid())
+  serviceRequestId  String
+  serviceRequest    ServiceRequest @relation(fields: [serviceRequestId], references: [id], onDelete: Cascade)
+  hoursWorked       Float          @default(1.0)
+  hourlyRate        Float          @default(45.0)
+  materialsUsed     String?        // Descrizione / lista dei ricambi e costi
+  customerSignature String?        // Data URL firma o conferma cliente
+  totalAmount       Float          @default(0.0)
+  paymentStatus     String         @default("DA_PAGARE") // DA_PAGARE | SALDATO
+  paymentMethod     String?        // CONTANTI | POS | BONIFICO
+  technicianNotes   String?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@index([serviceRequestId])
+}

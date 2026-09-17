@@ -38,8 +38,8 @@ ENV HOSTNAME="0.0.0.0"
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Cartella per dati SQLite con permessi corretti
-RUN mkdir -p /app/prisma && chown -R nextjs:nodejs /app/prisma
+# Cartella per dati SQLite con permessi corretti (volume standard /app/data per Taaaac VPS)
+RUN mkdir -p /app/data /app/prisma && chown -R nextjs:nodejs /app/data /app/prisma
 
 # Copia gli artifact standalone
 COPY --from=builder /app/public ./public

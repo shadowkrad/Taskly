@@ -2,18 +2,18 @@ import React from 'react';
 import { getTasks, seedSampleTasksIfEmpty, TaskItem } from '@/lib/tasks';
 import { TaskDashboard } from '@/components/task-dashboard';
 import { TenantSidebar } from '@/components/tenant-sidebar';
-import { CheckSquare2, Sparkles } from 'lucide-react';
+import { CheckSquare2, Sparkles, ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-export default async function HomePage() {
+export default async function TasksPage() {
   let tasks: TaskItem[] = [];
   try {
-    // Popola compiti dimostrativi se il DB del tenant è vuoto al primo avvio
     await seedSampleTasksIfEmpty();
     tasks = await getTasks();
   } catch (error) {
-    console.warn('[HomePage] Errore inizializzazione dati, fallback a getTasks:', error);
+    console.warn('[TasksPage] Errore inizializzazione dati, fallback a getTasks:', error);
     try {
       tasks = await getTasks();
     } catch {
@@ -29,16 +29,23 @@ export default async function HomePage() {
   })) as unknown as TaskItem[];
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Intestazione Principale */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-200">
         <div>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors mb-2"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Torna alla Vetrina
+          </Link>
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-2.5">
             <CheckSquare2 className="w-7 h-7 text-indigo-600 shrink-0" />
             Pannello Attività Taskly
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Gestione operativa centralizzata con sincronizzazione moduli e stato tenant.
+            Gestione operativa attività generiche e compiti tenant.
           </p>
         </div>
 
