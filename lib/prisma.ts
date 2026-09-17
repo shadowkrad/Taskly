@@ -2,8 +2,8 @@ import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
 
-// Assicuriamo che DATABASE_URL sia sempre valorizzato
-if (!process.env.DATABASE_URL) {
+// Assicuriamo che DATABASE_URL sia sempre valorizzato e non una stringa vuota
+if (!process.env.DATABASE_URL || process.env.DATABASE_URL.trim() === '') {
   process.env.DATABASE_URL = process.env.VERCEL ? 'file:/tmp/dev.db' : 'file:./dev.db';
 }
 
