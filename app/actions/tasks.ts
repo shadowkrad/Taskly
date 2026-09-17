@@ -1,6 +1,6 @@
 'use server';
 
-import prisma from '@/lib/prisma';
+import { prisma, ensureDatabaseSchema } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
@@ -69,6 +69,7 @@ export async function getTasks(filters?: {
   search?: string;
 }): Promise<TaskItem[]> {
   try {
+    await ensureDatabaseSchema();
     const whereClause: Prisma.TaskWhereInput = {};
 
     if (filters?.status && filters.status !== 'ALL') {
@@ -124,6 +125,7 @@ export async function createTask(formData: FormData) {
   }
 
   try {
+    await ensureDatabaseSchema();
     await prisma.task.create({
       data: {
         title,
@@ -177,6 +179,7 @@ export async function deleteTask(id: string) {
 
 export async function seedSampleTasksIfEmpty() {
   try {
+    await ensureDatabaseSchema();
     const count = await prisma.task.count();
     if (count === 0) {
       await prisma.task.createMany({

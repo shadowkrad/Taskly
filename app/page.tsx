@@ -1,5 +1,5 @@
 import React from 'react';
-import { getTasks, seedSampleTasksIfEmpty } from '@/app/actions/tasks';
+import { getTasks, seedSampleTasksIfEmpty, TaskItem } from '@/app/actions/tasks';
 import { TaskDashboard } from '@/components/task-dashboard';
 import { TenantSidebar } from '@/components/tenant-sidebar';
 import { CheckSquare2, Sparkles } from 'lucide-react';
@@ -7,9 +7,19 @@ import { CheckSquare2, Sparkles } from 'lucide-react';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  // Popola compiti dimostrativi se il DB del tenant è vuoto al primo avvio
-  await seedSampleTasksIfEmpty();
-  const tasks = await getTasks();
+  let tasks: TaskItem[] = [];
+  try {
+    // Popola compiti dimostrativi se il DB del tenant è vuoto al primo avvio
+    await seedSampleTasksIfEmpty();
+    tasks = await getTasks();
+  } catch (error) {
+    console.warn('[HomePage] Errore inizializzazione dati, fallback a getTasks:', error);
+    try {
+      tasks = await getTasks();
+    } catch {
+      tasks = [];
+    }
+  }
 
   return (
     <div className="space-y-8">
