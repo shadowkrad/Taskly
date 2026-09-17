@@ -1,0 +1,30 @@
+services:
+  taskly:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - DATABASE_URL=file:/app/prisma/dev.db
+      - TAAAAC_CORE_URL=https://taaaac.eu
+      - TAAAAC_DOMAIN=.taaaac.eu
+      - TAAAAC_TOKEN=
+      - NODE_ENV=production
+    volumes:
+      - taskly_data:/app/prisma
+    networks:
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.taskly.rule=Host(${SUBDOMAIN:-taskly}.taaaac.eu)"
+      - "traefik.http.routers.taskly.entrypoints=websecure"
+      - "traefik.http.routers.taskly.tls.certresolver=letsencrypt"
+      - "traefik.http.services.taskly.loadbalancer.server.port=3000"
+
+volumes:
+  taskly_data:
+    name: taskly__data
+
+networks:
+  traefik-public:
+    external: true

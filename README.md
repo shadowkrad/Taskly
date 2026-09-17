@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Taskly • Taaaac Modular Ecosystem
 
-## Getting Started
+Applicativo verticale indipendente per la gestione operativa di task e progetti, sviluppato per integrarsi nativamente nella console centrale **Taaaac Core** (https://taaaac.eu).
 
-First, run the development server:
+Gestito da **Alessio Guidelli** (GitHub: [shadowkrad](https://github.com/shadowkrad)).
 
-```bash
+---
+
+## 🎯 Architettura & Ruolo
+
+- **Applicativo Indipendente**: Ospitato nel repository shadowkrad/taskly.
+- **Database Isolato**: SQLite con Prisma ORM, isolato per ogni singolo tenant/cliente (dev.db).
+- **Integrazione Taaaac Core**: Consuma l'API runtime GET https://taaaac.eu/api/public/tenant-config?domain=[domain]&token=[token] per:
+  1. Validazione stato licenza (ATTIVO, SOSPESO, IN_SCADENZA).
+  2. Moduli Add-on abilitati (es. WHATSAPP_REMINDERS, TASKLY_AUTOMATIONS, ADVANCED_REPORTS).
+  3. Personalizzazione dinamica del brand (palette colori CSS variabili, nome brand, logo).
+
+---
+
+## 🎨 Taaaac Design System
+
+- **Stack**: Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS, Lucide React, Prisma.
+- **Sfondo neutro elegante**: g-slate-50.
+- **Card & Container**: card-taaaac (g-white border border-slate-200/90 rounded-2xl p-5 shadow-xs).
+- **Pulsanti & Interazioni**: tn-taaaac (ounded-xl font-semibold transition-all cursor-pointer).
+- **Palette dinamica**: Variabili semantiche CSS (--color-brand-primary, --color-brand-accent) per il tema del brand del cliente.
+
+---
+
+## 🚀 Primi Passi & Sviluppo Locale
+
+### 1. Installazione Dipendenze
+`ash
+npm install
+`
+
+### 2. Configurazione Ambiente
+Copia il file .env.example in .env:
+`ash
+cp .env.example .env
+`
+
+### 3. Setup Database SQLite
+`ash
+npm run db:push
+`
+
+### 4. Avvio Server di Sviluppo
+`ash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+`
+L'app sarà raggiungibile su [http://localhost:3000](http://localhost:3000).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚢 Distribuzione & Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Vercel (Branch cliente-demo)
+Per le anteprime live e le demo clienti:
+`ash
+git checkout cliente-demo
+git push origin cliente-demo
+`
 
-## Learn More
+### Container Docker su VPS Aruba con Traefik SSL
+Il progetto include Dockerfile standalone ottimizzato e docker-compose.yml preconfigurato con etichette Traefik SSL:
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`ash
+# Avvio del container isolato del tenant
+SUBDOMAIN=cliente1 TAAAAC_TOKEN="token_segreto" docker compose up -d --build
+`
+Traefik routerà automaticamente il traffico HTTPS da https://cliente1.taaaac.eu con certificato Let's Encrypt al container.
