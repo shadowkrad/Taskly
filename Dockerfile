@@ -20,6 +20,7 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV DOCKER_BUILD=1
 
 RUN npx prisma generate
 RUN npm run build

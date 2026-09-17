@@ -1,6 +1,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 
 export interface TaskItem {
@@ -21,7 +22,7 @@ export async function getTasks(filters?: {
   search?: string;
 }): Promise<TaskItem[]> {
   try {
-    const whereClause: Record<string, any> = {};
+    const whereClause: Prisma.TaskWhereInput = {};
 
     if (filters?.status && filters.status !== 'ALL') {
       whereClause.status = filters.status;

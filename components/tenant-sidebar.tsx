@@ -10,12 +10,11 @@ import {
   BarChart3, 
   Database, 
   ShieldCheck, 
-  Palette,
-  Server
+  Palette
 } from 'lucide-react';
 
 export function TenantSidebar() {
-  const { config, hasAddon } = useTenant();
+  const { config } = useTenant();
 
   const addonIcons: Record<string, React.ReactNode> = {
     WHATSAPP_REMINDERS: <MessageSquare className="w-4 h-4 text-emerald-600" />,

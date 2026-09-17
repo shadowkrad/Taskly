@@ -2,10 +2,10 @@
 
 import React from 'react';
 import { useTenant } from './tenant-provider';
-import { CheckCircle, ShieldCheck, Sparkles, ExternalLink, Layers } from 'lucide-react';
+import { ExternalLink, Layers } from 'lucide-react';
 
 export function Navbar() {
-  const { config, isLicenseActive } = useTenant();
+  const { config } = useTenant();
 
   return (
     <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-3.5 transition-all">
@@ -16,6 +16,7 @@ export function Navbar() {
             className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-xs font-bold text-lg brand-bg"
           >
             {config.theme.clientLogo ? (
+              // eslint-disable-next-line @next/next/no-img-element
               <img src={config.theme.clientLogo} alt={config.theme.brandName} className="w-7 h-7 object-contain" />
             ) : (
               <Layers className="w-5 h-5" />

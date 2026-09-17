@@ -7,17 +7,13 @@ import { cn } from '@/lib/utils';
 import { 
   Plus, 
   Search, 
-  Filter, 
   CheckCircle2, 
   Clock, 
   CircleDashed, 
   Trash2, 
-  AlertCircle, 
   Calendar, 
   Tag, 
   MessageSquare,
-  Sparkles,
-  ArrowRight,
   Check,
   X
 } from 'lucide-react';
@@ -27,9 +23,9 @@ interface TaskDashboardProps {
 }
 
 export function TaskDashboard({ initialTasks }: TaskDashboardProps) {
-  const { config, hasAddon } = useTenant();
+  const { hasAddon } = useTenant();
   const [tasks, setTasks] = useState<TaskItem[]>(initialTasks);
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   // Filtri
   const [searchQuery, setSearchQuery] = useState('');

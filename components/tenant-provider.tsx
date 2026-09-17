@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useMemo } from 'react';
 import { TenantConfig, TaaaacAddon } from '@/lib/taaaac';
-import { AlertTriangle, ShieldAlert, CheckCircle2, Sparkles, ExternalLink } from 'lucide-react';
+import { AlertTriangle, ShieldAlert, ExternalLink } from 'lucide-react';
 
 interface TenantContextType {
   config: TenantConfig;
@@ -52,11 +52,11 @@ export function TenantProvider({
           <div className="space-y-1">
             <h1 className="text-xl font-bold text-slate-900">Licenza Sospesa</h1>
             <p className="text-sm text-slate-500">
-              L'istanza per <strong>{config.domain}</strong> risulta momentaneamente non attiva sulla console centrale Taaaac Core.
+              L&apos;istanza per <strong>{config.domain}</strong> risulta momentaneamente non attiva sulla console centrale Taaaac Core.
             </p>
           </div>
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-200/80 text-xs text-slate-600">
-            Per riattivare l'accesso, accedi alla dashboard di gestione o contatta il supporto Taaaac.
+            Per riattivare l&apos;accesso, accedi alla dashboard di gestione o contatta il supporto Taaaac.
           </div>
           <a
             href="https://taaaac.eu"

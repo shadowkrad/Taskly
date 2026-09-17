@@ -2,7 +2,7 @@ import React from 'react';
 import { getTasks, seedSampleTasksIfEmpty } from '@/app/actions/tasks';
 import { TaskDashboard } from '@/components/task-dashboard';
 import { TenantSidebar } from '@/components/tenant-sidebar';
-import { CheckSquare2, Sparkles, ShieldCheck } from 'lucide-react';
+import { CheckSquare2, Sparkles } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
