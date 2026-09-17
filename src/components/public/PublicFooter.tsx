@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Phone, Mail, MapPin, Lock } from 'lucide-react';
+import { ShieldCheck, Phone, Mail, MapPin } from 'lucide-react';
 
 export function PublicFooter() {
   return (
@@ -54,15 +54,6 @@ export function PublicFooter() {
                 <MapPin className="w-3.5 h-3.5 text-indigo-400" />
                 <span>Via dell&apos;Artigianato 10, Milano</span>
               </li>
-              <li className="pt-2">
-                <Link
-                  href="/admin"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors border border-slate-700"
-                >
-                  <Lock className="w-3 h-3 text-slate-400" />
-                  Area Riservata Tecnico
-                </Link>
-              </li>
             </ul>
           </div>
         </div>
@@ -70,10 +61,10 @@ export function PublicFooter() {
         <div className="pt-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2">
           <p>© {new Date().getFullYear()} Taskly — Modulo dell&apos;ecosistema Taaaac. Tutti i diritti riservati.</p>
           <div className="flex items-center gap-4">
-            <span className="hover:text-slate-400 cursor-pointer">Privacy Policy</span>
+            <span className="hover:text-slate-400 cursor-pointer">Privacy Policy (GDPR)</span>
             <span className="hover:text-slate-400 cursor-pointer">Termini di Servizio</span>
-            <Link href="/admin" className="text-indigo-400 hover:text-indigo-300 font-medium">
-              Dashboard Operativa
+            <Link href="/login" className="text-slate-600 hover:text-slate-400 transition-colors">
+              Area Staff
             </Link>
           </div>
         </div>
