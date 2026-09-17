@@ -21,6 +21,13 @@ export default async function HomePage() {
     }
   }
 
+  const safeTasks = tasks.map((t) => ({
+    ...t,
+    dueDate: t.dueDate ? new Date(t.dueDate).toISOString() : null,
+    completedAt: t.completedAt ? new Date(t.completedAt).toISOString() : null,
+    createdAt: t.createdAt ? new Date(t.createdAt).toISOString() : new Date().toISOString(),
+  })) as unknown as TaskItem[];
+
   return (
     <div className="space-y-8">
       {/* Intestazione Principale */}
@@ -44,7 +51,7 @@ export default async function HomePage() {
       {/* Griglia a 2 colonne: Dashboard Principale (70%) + Sidebar Tenant (30%) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <section className="lg:col-span-8">
-          <TaskDashboard initialTasks={tasks} />
+          <TaskDashboard initialTasks={safeTasks} />
         </section>
 
         <aside className="lg:col-span-4">

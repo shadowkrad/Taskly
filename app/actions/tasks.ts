@@ -11,9 +11,9 @@ export interface TaskItem {
   status: string;
   priority: string;
   category: string;
-  dueDate: Date | null;
-  completedAt: Date | null;
-  createdAt: Date;
+  dueDate: Date | string | null;
+  completedAt: Date | string | null;
+  createdAt: Date | string;
 }
 
 const FALLBACK_TASKS: TaskItem[] = [
