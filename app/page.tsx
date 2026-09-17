@@ -1,5 +1,5 @@
 import React from 'react';
-import { getTasks, seedSampleTasksIfEmpty, TaskItem } from '@/app/actions/tasks';
+import { getTasks, seedSampleTasksIfEmpty, TaskItem } from '@/lib/tasks';
 import { TaskDashboard } from '@/components/task-dashboard';
 import { TenantSidebar } from '@/components/tenant-sidebar';
 import { CheckSquare2, Sparkles } from 'lucide-react';
