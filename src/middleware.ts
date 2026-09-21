@@ -7,24 +7,38 @@ export async function middleware(request: NextRequest) {
   const session = await verifySessionToken(token);
 
   const pathname = request.nextUrl.pathname;
-  const isProtected = pathname.startsWith('/admin') || pathname.startsWith('/tasks');
+  const isAdmin = pathname === '/admin';
+  const isDashboard = pathname.startsWith('/dashboard') || pathname.startsWith('/tasks');
   const isLoginPage = pathname === '/login';
 
+  // Alias /admin -> redirect to /dashboard
+  if (isAdmin) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
   // Se tenta di accedere all'area riservata senza sessione valida -> redirect al login
-  if (isProtected && !session) {
+  if (isDashboard && !session) {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('callbackUrl', pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  // Se è già autenticato e visita /login -> redirect diretto ad /admin
+  // Se è già autenticato e visita /login -> redirect diretto a /dashboard
   if (isLoginPage && session) {
-    return NextResponse.redirect(new URL('/admin', request.url));
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+
+  // Security Headers
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("X-Frame-Options", "SAMEORIGIN");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set("X-XSS-Protection", "1; mode=block");
+
+  return response;
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/tasks/:path*', '/login'],
+  matcher: ['/dashboard/:path*', '/tasks/:path*', '/admin', '/admin/:path*', '/login'],
 };

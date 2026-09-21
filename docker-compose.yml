@@ -8,7 +8,8 @@ services:
       - DATABASE_URL=file:/app/prisma/dev.db
       - TAAAAC_CORE_URL=https://taaaac.eu
       - TAAAAC_DOMAIN=.taaaac.eu
-      - TAAAAC_TOKEN=
+      - TAAAAC_TOKEN=${TAAAAC_TOKEN:-}
+      - TENANT_ID=${TENANT_ID:-demo}
       - NODE_ENV=production
     volumes:
       - taskly_data:/app/prisma
@@ -16,14 +17,14 @@ services:
       - traefik-public
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.taskly.rule=Host(${SUBDOMAIN:-taskly}.taaaac.eu)"
-      - "traefik.http.routers.taskly.entrypoints=websecure"
-      - "traefik.http.routers.taskly.tls.certresolver=letsencrypt"
-      - "traefik.http.services.taskly.loadbalancer.server.port=3000"
+      - "traefik.http.routers.taskly-${TENANT_ID:-demo}.rule=Host(`${SUBDOMAIN:-taskly}.taaaac.eu`)"
+      - "traefik.http.routers.taskly-${TENANT_ID:-demo}.entrypoints=websecure"
+      - "traefik.http.routers.taskly-${TENANT_ID:-demo}.tls.certresolver=letsencrypt"
+      - "traefik.http.services.taskly-${TENANT_ID:-demo}.loadbalancer.server.port=3000"
 
 volumes:
   taskly_data:
-    name: taskly__data
+    name: taskly_${TENANT_ID:-demo}_data
 
 networks:
   traefik-public:
