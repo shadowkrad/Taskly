@@ -1,5 +1,5 @@
 import React from "react";
-import { Layers, Euro, Clock, AlertTriangle } from "lucide-react";
+import { Layers, AlertTriangle } from "lucide-react";
 
 export default function ServiziPage() {
   const services = [

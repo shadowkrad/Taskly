@@ -1,7 +1,7 @@
 import React from "react";
 import AddonModuleGuard from "@/components/dashboard/AddonModuleGuard";
 import { TAAAAC_ADDONS } from "@/lib/taaaac-client";
-import { Star, MessageSquare, ExternalLink } from "lucide-react";
+import { Star, ExternalLink } from "lucide-react";
 
 export default function RecensioniAddonPage() {
   const reviews = [

@@ -7,18 +7,10 @@ import {
   Flame,
   KeyRound,
   Hammer,
-  AlertTriangle,
-  Clock,
-  MapPin,
-  Phone,
-  User,
-  Mail,
   ShieldCheck,
-  CheckCircle2,
   AlertCircle,
   ArrowRight,
   ArrowLeft,
-  Calendar,
 } from "lucide-react";
 import { createServiceRequest } from "@/app/actions/interventions";
 import type { ServiceRequestInput } from "@/lib/validations";
@@ -326,7 +318,7 @@ export function BookingForm() {
                   <button
                     key={lvl.id}
                     type="button"
-                    onClick={() => setUrgency(lvl.id as any)}
+                    onClick={() => setUrgency(lvl.id as "ORDINARIO" | "URGENTE" | "EMERGENZA")}
                     className={`p-4 rounded-2xl border text-left transition-all ${
                       isSelected
                         ? lvl.id === "EMERGENZA"

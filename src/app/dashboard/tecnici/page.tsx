@@ -1,5 +1,5 @@
 import React from "react";
-import { Users, Phone, MapPin, CheckCircle, ShieldCheck } from "lucide-react";
+import { Users, Phone, MapPin, ShieldCheck } from "lucide-react";
 
 export default function TecniciPage() {
   const technicians = [

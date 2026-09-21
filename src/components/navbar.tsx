@@ -11,8 +11,14 @@ export function Navbar() {
   const { config } = useTenant();
   const pathname = usePathname();
 
+  const isDashboard = pathname.startsWith('/dashboard');
   const isAdmin = pathname.startsWith('/admin') || pathname.startsWith('/tasks');
   const isLoginPage = pathname === '/login';
+
+  // Se siamo all'interno di /dashboard, la navigazione è gestita interamente da DashboardSidebar
+  if (isDashboard) {
+    return null;
+  }
 
   // 1. Navbar per la Dashboard di Gestione Riservata (Tecnico Autenticato)
   if (isAdmin) {

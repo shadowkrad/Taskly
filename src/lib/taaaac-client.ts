@@ -113,8 +113,9 @@ export async function fetchTenantConfig(domain?: string): Promise<TenantConfig> 
         return data.tenant as TenantConfig;
       }
     }
-  } catch (err: any) {
-    console.warn(`[TaaaacClient] Taskly fallback per (${coreApiUrl}):`, err?.message || err);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[TaaaacClient] Taskly fallback per (${coreApiUrl}):`, msg);
   }
 
   if (isLocalDev) {

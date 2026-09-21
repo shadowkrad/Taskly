@@ -2,7 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { BookingForm } from "@/components/public/BookingForm";
 import { PublicFooter } from "@/components/public/PublicFooter";
-import { ArrowLeft, Wrench, Shield, PhoneCall } from "lucide-react";
+import { ArrowLeft, Wrench, Shield } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 

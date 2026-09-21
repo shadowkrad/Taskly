@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Settings, Save, Clock, Shield, Bell, CheckCircle2 } from "lucide-react";
+import { Settings, Save, Clock, Shield, CheckCircle2 } from "lucide-react";
 import { useTenantConfig } from "@/components/providers/TenantConfigProvider";
 
 export default function ImpostazioniPage() {

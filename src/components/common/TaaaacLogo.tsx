@@ -43,6 +43,7 @@ interface TaaaacLogoProps {
   textSize?: string;
   showBadge?: boolean;
   badgeText?: string;
+  theme?: "dark" | "light";
 }
 
 export function TaaaacLogo({
@@ -51,18 +52,44 @@ export function TaaaacLogo({
   textSize = "text-base",
   showBadge = true,
   badgeText = "Taskly",
+  theme = "dark",
 }: TaaaacLogoProps) {
+  const isDark = theme === "dark";
+
   return (
     <div className={`inline-flex items-center gap-2 min-w-0 ${className}`}>
-      <div className="relative shrink-0 flex items-center justify-center p-1 rounded-xl bg-blue-50 border border-blue-100 shadow-2xs">
+      {/* Icon Container: bianco nitido con shadow su dark, azzurro chiaro su light */}
+      <div
+        className={`relative shrink-0 flex items-center justify-center p-1.5 rounded-xl shadow-xs transition-colors ${
+          isDark
+            ? "bg-white border border-white/20 shadow-sm"
+            : "bg-blue-50 border border-blue-100"
+        }`}
+      >
         <TaaaacIcon size={iconSize} />
       </div>
+
+      {/* Brand Text + Badge */}
       <div className="flex items-center gap-1.5 min-w-0">
-        <span className={`font-black tracking-tight text-slate-900 shrink-0 ${textSize}`}>
-          taaaac<span className="text-emerald-600">.eu</span>
+        <span
+          className={`font-black tracking-tight shrink-0 transition-colors ${
+            isDark ? "text-white" : "text-slate-900"
+          } ${textSize}`}
+        >
+          taaaac
+          <span className={isDark ? "text-emerald-400 font-black" : "text-emerald-600 font-black"}>
+            .eu
+          </span>
         </span>
+
         {showBadge && badgeText && (
-          <span className="text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md bg-blue-50 text-blue-700 border border-blue-200 shrink-0 tracking-wider">
+          <span
+            className={`text-[9px] uppercase font-bold px-1.5 py-0.5 rounded-md shrink-0 tracking-wider transition-colors ${
+              isDark
+                ? "bg-blue-600 text-white font-extrabold shadow-2xs border border-blue-400/50"
+                : "bg-blue-50 text-blue-700 border border-blue-200"
+            }`}
+          >
             {badgeText}
           </span>
         )}

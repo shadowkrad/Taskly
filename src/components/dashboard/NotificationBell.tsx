@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { Bell, AlertTriangle, Check, Wrench } from "lucide-react";
+import { Bell, AlertTriangle } from "lucide-react";
 
 interface NotificaItem {
   id: string;
@@ -18,6 +18,25 @@ interface Props {
 }
 
 const READ_IDS_KEY = "taskly_notifiche_read_ids";
+
+const INITIAL_NOTIFICHE: NotificaItem[] = [
+  {
+    id: "tsk1",
+    tipo: "URGENZA",
+    titolo: "🚨 Chiamata SOS Pronto Intervento",
+    descrizione: "Perdita idraulica urgente in Via Roma 42",
+    timestamp: "2026-09-21T16:00:00.000Z",
+    isUnread: true,
+  },
+  {
+    id: "tsk2",
+    tipo: "INFO",
+    titolo: "Rapportino Archiviato",
+    descrizione: "Intervento caldaia completato con firma cliente",
+    timestamp: "2026-09-21T14:00:00.000Z",
+    isUnread: false,
+  },
+];
 
 function getLocalReadIds(): string[] {
   if (typeof window === "undefined") return [];
@@ -40,37 +59,17 @@ function saveLocalReadIds(ids: string[]) {
 
 export default function NotificationBell({ placement = "sidebar" }: Props) {
   const [open, setOpen] = useState(false);
-  const [notifiche, setNotifiche] = useState<NotificaItem[]>([
-    {
-      id: "tsk1",
-      tipo: "URGENZA",
-      titolo: "🚨 Chiamata SOS Pronto Intervento",
-      descrizione: "Perdita idraulica urgente in Via Roma 42",
-      timestamp: new Date().toISOString(),
-      isUnread: true,
-    },
-    {
-      id: "tsk2",
-      tipo: "INFO",
-      titolo: "Rapportino Archiviato",
-      descrizione: "Intervento caldaia completato con firma cliente",
-      timestamp: new Date(Date.now() - 7200000).toISOString(),
-      isUnread: false,
-    },
-  ]);
-  const [unreadCount, setUnreadCount] = useState(1);
-  const popoverRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
+  const [notifiche, setNotifiche] = useState<NotificaItem[]>(() => {
+    if (typeof window === "undefined") return INITIAL_NOTIFICHE;
     const readIds = new Set(getLocalReadIds());
-    setNotifiche((prev) =>
-      prev.map((n) => ({ ...n, isUnread: !readIds.has(n.id) && n.isUnread }))
-    );
-  }, []);
+    return INITIAL_NOTIFICHE.map((n) => ({
+      ...n,
+      isUnread: !readIds.has(n.id) && n.isUnread,
+    }));
+  });
 
-  useEffect(() => {
-    setUnreadCount(notifiche.filter((n) => n.isUnread).length);
-  }, [notifiche]);
+  const unreadCount = notifiche.filter((n) => n.isUnread).length;
+  const popoverRef = useRef<HTMLDivElement>(null);
 
   const markAllAsRead = () => {
     const allIds = notifiche.map((n) => n.id);
@@ -102,12 +101,12 @@ export default function NotificationBell({ placement = "sidebar" }: Props) {
     <div className="relative inline-block" ref={popoverRef}>
       <button
         onClick={() => setOpen(!open)}
-        className="relative p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+        className="relative p-2 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
         aria-label="Notifiche"
       >
-        <Bell className="w-5 h-5 text-slate-700" />
+        <Bell className="w-5 h-5 text-slate-200 hover:text-white" />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full text-[10px] font-extrabold flex items-center justify-center ring-2 ring-white animate-pulse">
+          <span className="absolute top-1 right-1 w-4 h-4 bg-red-600 text-white rounded-full text-[10px] font-extrabold flex items-center justify-center ring-2 ring-slate-900 animate-pulse">
             {unreadCount > 9 ? "9+" : unreadCount}
           </span>
         )}
@@ -115,15 +114,17 @@ export default function NotificationBell({ placement = "sidebar" }: Props) {
 
       {open && (
         <div
-          className={`absolute z-50 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200/90 overflow-hidden animate-in fade-in-50 zoom-in-95 duration-150 ${
-            placement === "sidebar" ? "left-0 sm:left-auto right-0" : "right-0"
+          className={`z-50 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in-50 zoom-in-95 duration-150 ${
+            placement === "sidebar"
+              ? "fixed inset-x-4 top-16 max-w-sm mx-auto sm:absolute sm:inset-auto sm:top-full sm:mt-2 sm:left-0 sm:right-auto sm:w-96"
+              : "fixed inset-x-4 top-14 max-w-sm mx-auto sm:absolute sm:inset-auto sm:top-full sm:mt-2 sm:right-0 sm:left-auto sm:w-80"
           }`}
         >
           <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="font-bold text-xs text-slate-900">Notifiche Taskly</span>
               {unreadCount > 0 && (
-                <span className="text-[10px] font-black bg-red-100 text-red-800 px-1.5 py-0.2 rounded-full">
+                <span className="text-[10px] font-black bg-red-100 text-red-800 px-1.5 py-0.5 rounded-full">
                   {unreadCount} nuove
                 </span>
               )}
@@ -131,7 +132,7 @@ export default function NotificationBell({ placement = "sidebar" }: Props) {
             {unreadCount > 0 && (
               <button
                 onClick={markAllAsRead}
-                className="text-[11px] font-semibold text-blue-700 hover:underline cursor-pointer"
+                className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer"
               >
                 Segna tutte lette
               </button>
@@ -140,16 +141,16 @@ export default function NotificationBell({ placement = "sidebar" }: Props) {
 
           <div className="max-h-80 overflow-y-auto divide-y divide-slate-100">
             {notifiche.length === 0 ? (
-              <div className="py-8 text-center text-xs text-slate-400">
-                Nessun avviso
+              <div className="py-8 text-center text-xs text-slate-500 font-medium">
+                Nessun avviso presente
               </div>
             ) : (
               notifiche.map((item) => (
                 <div
                   key={item.id}
                   onClick={() => markOneAsRead(item.id)}
-                  className={`p-3 text-xs transition-colors cursor-pointer flex items-start gap-2.5 ${
-                    item.isUnread ? "bg-red-50/30 hover:bg-red-50/60" : "hover:bg-slate-50"
+                  className={`p-3.5 text-xs transition-colors cursor-pointer flex items-start gap-3 ${
+                    item.isUnread ? "bg-red-50/40 hover:bg-red-50/70" : "hover:bg-slate-50"
                   }`}
                 >
                   <div className="w-7 h-7 rounded-lg bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5">
@@ -162,7 +163,7 @@ export default function NotificationBell({ placement = "sidebar" }: Props) {
                         <span className="w-2 h-2 rounded-full bg-red-600 shrink-0" />
                       )}
                     </div>
-                    <p className="text-slate-600 text-[11px] mt-0.5 leading-snug">
+                    <p className="text-slate-700 text-[11px] mt-0.5 leading-snug font-medium">
                       {item.descrizione}
                     </p>
                   </div>
@@ -171,11 +172,11 @@ export default function NotificationBell({ placement = "sidebar" }: Props) {
             )}
           </div>
 
-          <div className="p-2 bg-slate-50 border-t border-slate-100 text-center">
+          <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-center">
             <Link
               href="/dashboard/interventi"
               onClick={() => setOpen(false)}
-              className="text-xs font-semibold text-blue-700 hover:underline"
+              className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline"
             >
               Vedi tutte le chiamate →
             </Link>

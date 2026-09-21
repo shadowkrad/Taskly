@@ -84,7 +84,7 @@ export default function DashboardSidebar() {
       {/* Mobile Top Bar */}
       <div className="md:hidden flex items-center justify-between px-4 py-2.5 bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-40">
         <Link href="/dashboard" className="flex items-center gap-1.5 min-w-0">
-          <TaaaacLogo iconSize={20} textSize="text-base" showBadge={true} badgeText="Taskly" />
+          <TaaaacLogo iconSize={20} textSize="text-base" showBadge={true} badgeText="Taskly" theme="dark" />
         </Link>
         <div className="flex items-center gap-1.5">
           <NotificationBell placement="topbar" />
@@ -115,7 +115,7 @@ export default function DashboardSidebar() {
         {/* Brand */}
         <div className="px-4 py-4 border-b border-slate-800 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-1.5 min-w-0 flex-1">
-            <TaaaacLogo iconSize={22} textSize="text-base" showBadge={true} badgeText="Taskly" />
+            <TaaaacLogo iconSize={22} textSize="text-base" showBadge={true} badgeText="Taskly" theme="dark" />
           </Link>
           <div className="flex items-center gap-1 shrink-0">
             <NotificationBell placement="sidebar" />
@@ -237,7 +237,7 @@ export default function DashboardSidebar() {
             </span>
             <ChevronRight className="w-3.5 h-3.5" />
           </Link>
-          <div className="text-[10px] text-slate-400/60 text-center font-mono">
+          <div className="text-[10px] text-slate-400 text-center font-medium">
             Taskly Core · Taaaac Engine
           </div>
         </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import AddonModuleGuard from "@/components/dashboard/AddonModuleGuard";
 import { TAAAAC_ADDONS } from "@/lib/taaaac-client";
-import { Award, Users, Gift, Plus } from "lucide-react";
+import { Award, Gift, Plus } from "lucide-react";
 
 export default function FedeltaAddonPage() {
   return (

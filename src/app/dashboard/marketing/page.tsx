@@ -1,7 +1,7 @@
 import React from "react";
 import AddonModuleGuard from "@/components/dashboard/AddonModuleGuard";
 import { TAAAAC_ADDONS } from "@/lib/taaaac-client";
-import { Megaphone, Send, CheckCircle2 } from "lucide-react";
+import { Megaphone, Send } from "lucide-react";
 
 export default function MarketingAddonPage() {
   return (
