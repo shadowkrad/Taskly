@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { Wrench, Zap, Flame, KeyRound, Hammer, AlertTriangle, ArrowRight } from 'lucide-react';
 
 const SERVICES = [
@@ -90,13 +91,13 @@ export function ServicesSection() {
 
                 <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between">
                   <span className="text-xs font-medium text-slate-500">Uscita inclusa con lavoro</span>
-                  <a
-                    href={`#prenota?tipo=${encodeURIComponent(service.type)}`}
+                  <Link
+                    href={`/prenotazione?tipo=${encodeURIComponent(service.type)}`}
                     className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800"
                   >
                     Prenota ora
                     <ArrowRight className="w-3.5 h-3.5" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             );

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Phone, MessageSquare, Clock, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
+import { Phone, MessageSquare, Clock, ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 
 export function HeroSection() {
   return (
@@ -23,7 +24,7 @@ export function HeroSection() {
             Intervento in <strong>meno di 60 minuti</strong> per le emergenze o su appuntamento concordato.
           </p>
 
-          {/* CTA Buttons */}
+          {/* CTA Buttons: link a /prenotazione */}
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <a
               href="tel:+393401234567"
@@ -43,12 +44,13 @@ export function HeroSection() {
               Scrivi su WhatsApp
             </a>
 
-            <a
-              href="#prenota"
+            <Link
+              href="/prenotazione"
               className="flex items-center gap-2 px-5 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm sm:text-base shadow-sm transition-all"
             >
-              Richiedi Preventivo Rapido
-            </a>
+              <span>Richiedi Preventivo Rapido</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
 
           {/* Trust Guarantees */}
