@@ -1,62 +1,158 @@
-'use client';
+"use client";
 
-import React, { useState, useTransition } from 'react';
+import React, { useState, useTransition } from "react";
 import {
+  Wrench,
+  Zap,
+  Flame,
+  KeyRound,
+  Hammer,
+  AlertTriangle,
+  Clock,
+  MapPin,
   Phone,
   User,
-  MapPin,
-  AlertCircle,
-  CheckCircle2,
-  Send,
-  Loader2,
+  Mail,
   ShieldCheck,
-} from 'lucide-react';
-import { createServiceRequest } from '@/app/actions/interventions';
-import type { ServiceRequestInput } from '@/lib/validations';
+  CheckCircle2,
+  AlertCircle,
+  ArrowRight,
+  ArrowLeft,
+  Calendar,
+} from "lucide-react";
+import { createServiceRequest } from "@/app/actions/interventions";
+import type { ServiceRequestInput } from "@/lib/validations";
 
 const SERVICE_OPTIONS = [
-  'Idraulica & Disostruzioni',
-  'Impianti Elettrici & Salvavita',
-  'Caldaie, Scaldabagni & Clima',
-  'Fabbro & Serrature Blindate',
-  'Montaggi & Riparazioni Generali',
-  'Altro Intervento Tecnico',
+  {
+    title: "Idraulica & Disostruzioni",
+    desc: "Perdite d'acqua, scarichi intasati, sanitari e sifoni",
+    icon: Wrench,
+    type: "Idraulica",
+  },
+  {
+    title: "Impianti Elettrici & Salvavita",
+    desc: "Cortocircuiti, salvavita scattato, quadri elettrici e prese",
+    icon: Zap,
+    type: "Elettrico",
+  },
+  {
+    title: "Caldaie, Scaldabagni & Clima",
+    desc: "Blocco caldaia, controllo fumi, ricarica gas e split clima",
+    icon: Flame,
+    type: "Caldaie & Clima",
+  },
+  {
+    title: "Fabbro & Serrature Blindate",
+    desc: "Apertura porte senza scasso, chiavi spezzate, cilindro europeo",
+    icon: KeyRound,
+    type: "Serrature & Fabbro",
+  },
+  {
+    title: "Montaggi & Riparazioni Generali",
+    desc: "Tapparelle, infissi, mensole, mobili e piccole riparazioni",
+    icon: Hammer,
+    type: "Riparazioni Generali",
+  },
+  {
+    title: "Altro Intervento Tecnico",
+    desc: "Richiesta personalizzata per manutenzione impianti",
+    icon: Wrench,
+    type: "Altro",
+  },
 ];
 
 const TIME_OPTIONS = [
-  'Prima possibile (Urgente)',
-  'Mattina (08:30 - 12:30)',
-  'Pomeriggio (14:00 - 18:00)',
-  'Tardo Pomeriggio (18:00 - 20:00)',
-  'Concordare telefonicamente',
+  "Prima possibile (Emergenza)",
+  "Mattina (08:30 - 12:30)",
+  "Pomeriggio (14:00 - 18:00)",
+  "Tardo Pomeriggio (18:00 - 20:00)",
+  "Da concordare telefonicamente",
 ];
 
+const STEPS = ["Tipo Guasto", "Urgenza & Orario", "Luogo Intervento", "I tuoi dati", "Riepilogo"];
+
 export function BookingForm() {
+  const [step, setStep] = useState<number>(0);
   const [isPending, startTransition] = useTransition();
-  const [urgency, setUrgency] = useState<'ORDINARIO' | 'URGENTE' | 'EMERGENZA'>('ORDINARIO');
-  const [serviceType, setServiceType] = useState(SERVICE_OPTIONS[0]);
-  const [preferredTime, setPreferredTime] = useState(TIME_OPTIONS[0]);
-  const [customerName, setCustomerName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [description, setDescription] = useState('');
 
-  const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
-  const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string; ticketId?: string } | null>(null);
+  // Step 0: Tipo Guasto
+  const [serviceType, setServiceType] = useState<string>(SERVICE_OPTIONS[0].title);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormErrors({});
-    setStatusMessage(null);
+  // Step 1: Urgenza & Orario
+  const [urgency, setUrgency] = useState<"ORDINARIO" | "URGENTE" | "EMERGENZA">("ORDINARIO");
+  const [preferredTime, setPreferredTime] = useState<string>(TIME_OPTIONS[0]);
+
+  // Step 2: Indirizzo e Descrizione
+  const [address, setAddress] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+
+  // Step 3: Dati Contatto
+  const [customerName, setCustomerName] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [privacyAccepted, setPrivacyAccepted] = useState<boolean>(false);
+
+  // Stato Risultato
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [successData, setSuccessData] = useState<{ message: string; ticketId?: string } | null>(null);
+
+  const goNext = () => {
+    setErrorMsg(null);
+    if (step === 0) {
+      if (!serviceType) {
+        setErrorMsg("Seleziona la tipologia di intervento richiesta.");
+        return;
+      }
+      setStep(1);
+    } else if (step === 1) {
+      if (!preferredTime) {
+        setErrorMsg("Indica la fascia oraria preferita.");
+        return;
+      }
+      setStep(2);
+    } else if (step === 2) {
+      if (!address.trim() || address.trim().length < 5) {
+        setErrorMsg("Inserisci l'indirizzo completo (via, civico e città) per l'intervento.");
+        return;
+      }
+      if (!description.trim() || description.trim().length < 5) {
+        setErrorMsg("Descrivi brevemente il guasto o il lavoro da effettuare.");
+        return;
+      }
+      setStep(3);
+    } else if (step === 3) {
+      if (!customerName.trim()) {
+        setErrorMsg("Inserisci il tuo nome e cognome.");
+        return;
+      }
+      if (!phone.trim() || phone.replace(/\D/g, "").length < 6) {
+        setErrorMsg("Inserisci un numero di telefono valido per essere ricontattato.");
+        return;
+      }
+      if (!privacyAccepted) {
+        setErrorMsg("È necessario accettare l'informativa sulla privacy per procedere.");
+        return;
+      }
+      setStep(4);
+    }
+  };
+
+  const goBack = () => {
+    setErrorMsg(null);
+    setStep((prev) => Math.max(0, prev - 1));
+  };
+
+  const handleFinalSubmit = () => {
+    setErrorMsg(null);
 
     const payload: ServiceRequestInput = {
-      customerName,
-      phone,
-      email: email || undefined,
-      address,
+      customerName: customerName.trim(),
+      phone: phone.trim(),
+      email: email.trim() || undefined,
+      address: address.trim(),
       serviceType,
-      description,
+      description: description.trim(),
       urgency,
       preferredTime,
     };
@@ -64,298 +160,402 @@ export function BookingForm() {
     startTransition(async () => {
       const res = await createServiceRequest(payload);
       if (res.success) {
-        setStatusMessage({
-          type: 'success',
-          text: res.message,
+        setSuccessData({
+          message: res.message,
           ticketId: res.data?.id,
         });
-        // Reset form
-        setDescription('');
       } else {
-        setStatusMessage({
-          type: 'error',
-          text: res.message,
-        });
-        if (res.errors) {
-          setFormErrors(res.errors);
-        }
+        setErrorMsg(res.message || "Errore durante l'invio della richiesta.");
       }
     });
   };
 
-  return (
-    <section id="prenota" className="py-14 sm:py-18 bg-slate-50">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-10">
-          <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full border border-indigo-200/70">
-            Richiesta Diretta Senza Impegno
-          </span>
-          <h2 className="mt-3 text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Richiedi un Intervento o Preventivo Rapido
-          </h2>
-          <p className="mt-2 text-slate-600 text-sm sm:text-base">
-            Compila il modulo indicando l&apos;urgenza: riceverai una conferma telefonica entro pochi minuti.
-          </p>
+  // Schermata di Successo stile Schedly
+  if (successData) {
+    return (
+      <div className="text-center p-8 bg-white border-2 border-emerald-500/30 rounded-3xl max-w-xl mx-auto animate-in fade-in zoom-in duration-300">
+        <div className="w-16 h-16 rounded-2xl bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center text-3xl mb-4 shadow-xs">
+          🔧
+        </div>
+        <h3 className="text-2xl font-black text-slate-900 tracking-tight">
+          Richiesta Intervento Inviata!
+        </h3>
+        <p className="text-sm text-slate-600 mt-2 leading-relaxed">
+          Grazie <strong>{customerName}</strong>! La tua richiesta per <strong>{serviceType}</strong> è stata acquisita dai tecnici reperibili.
+        </p>
+
+        {successData.ticketId && (
+          <div className="mt-4 p-3 bg-slate-100 rounded-xl font-mono text-xs font-bold text-slate-700">
+            Codice Ticket: #{successData.ticketId.slice(0, 8)}
+          </div>
+        )}
+
+        <div className="mt-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-start gap-3 text-left">
+          <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+          <div>
+            <p className="font-bold">Priorità {urgency === "EMERGENZA" ? "Massima H24" : urgency === "URGENTE" ? "Urgente entro 24h" : "Ordinaria"}</p>
+            <p className="text-emerald-700 mt-0.5">
+              Un nostro tecnico ti contatterà al numero <strong>{phone}</strong> per confermare l&apos;orario esatto di arrivo e il materiale necessario.
+            </p>
+          </div>
         </div>
 
-        {statusMessage?.type === 'success' ? (
-          <div className="card-taaaac bg-white p-8 text-center border-emerald-300 shadow-md">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 className="w-10 h-10" />
+        <button
+          type="button"
+          onClick={() => {
+            setSuccessData(null);
+            setStep(0);
+          }}
+          className="mt-6 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-xs"
+        >
+          Invia un&apos;altra richiesta
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-2xl mx-auto space-y-6">
+      {/* Progress Bar a pallini stile Schedly */}
+      <div className="flex items-center justify-center gap-1 sm:gap-2">
+        {STEPS.map((label, idx) => (
+          <div key={idx} className="flex items-center">
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all ${
+                idx < step
+                  ? "bg-indigo-600 text-white"
+                  : idx === step
+                  ? "bg-indigo-600 text-white ring-4 ring-indigo-100"
+                  : "bg-slate-200 text-slate-500"
+              }`}
+            >
+              {idx < step ? "✓" : idx + 1}
             </div>
-            <h3 className="text-2xl font-bold text-slate-900">Richiesta Ricevuta!</h3>
-            <p className="text-slate-600 mt-2 max-w-md mx-auto text-sm sm:text-base">
-              {statusMessage.text}
-            </p>
-            {statusMessage.ticketId && (
-              <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200 inline-block text-xs font-mono text-slate-600">
-                Codice Intervento: <strong>#{statusMessage.ticketId.slice(-8).toUpperCase()}</strong>
-              </div>
-            )}
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <a
-                href="tel:+393401234567"
-                className="btn-taaaac px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold flex items-center gap-2"
-              >
-                <Phone className="w-4 h-4" />
-                Hai fretta? Chiama subito
-              </a>
-              <button
-                type="button"
-                onClick={() => setStatusMessage(null)}
-                className="btn-taaaac px-4 py-2.5 border border-slate-200 text-slate-700 hover:bg-slate-100 text-sm"
-              >
-                Invia un&apos;altra richiesta
-              </button>
-            </div>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="card-taaaac bg-white p-6 sm:p-8 shadow-sm">
-            {statusMessage?.type === 'error' && (
-              <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-sm flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-                <div>
-                  <p className="font-semibold">{statusMessage.text}</p>
-                </div>
-              </div>
-            )}
-
-            {/* 1. Selezione Livello Urgenza */}
-            <div className="mb-6">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">
-                1. Seleziona il livello di urgenza
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setUrgency('ORDINARIO')}
-                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                    urgency === 'ORDINARIO'
-                      ? 'border-indigo-600 bg-indigo-50/70 ring-2 ring-indigo-500/20'
-                      : 'border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-slate-900">🟢 Ordinario</span>
-                    <span className="text-[10px] font-semibold text-slate-500">Standard</span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-1">Intervento entro 2-3 giorni lavorativi.</p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setUrgency('URGENTE')}
-                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                    urgency === 'URGENTE'
-                      ? 'border-amber-500 bg-amber-50/80 ring-2 ring-amber-500/20'
-                      : 'border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-amber-900">🟡 Urgente</span>
-                    <span className="text-[10px] font-semibold text-amber-700">Entro 24h</span>
-                  </div>
-                  <p className="text-xs text-amber-800/80 mt-1">Priorità alta, intervento entro 24 ore.</p>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setUrgency('EMERGENZA')}
-                  className={`p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
-                    urgency === 'EMERGENZA'
-                      ? 'border-rose-600 bg-rose-50 ring-2 ring-rose-500/20'
-                      : 'border-slate-200 hover:bg-slate-50'
-                  }`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-rose-900">🔴 Emergenza 24h</span>
-                    <span className="text-[10px] font-semibold text-rose-700">60 Minuti</span>
-                  </div>
-                  <p className="text-xs text-rose-800/80 mt-1">Allagamenti, guasti gravi, porte bloccate.</p>
-                </button>
-              </div>
-            </div>
-
-            {/* 2. Categoria e Orario */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  2. Tipo di intervento
-                </label>
-                <select
-                  value={serviceType}
-                  onChange={(e) => setServiceType(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  {SERVICE_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                  Orario preferito
-                </label>
-                <select
-                  value={preferredTime}
-                  onChange={(e) => setPreferredTime(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                >
-                  {TIME_OPTIONS.map((opt) => (
-                    <option key={opt} value={opt}>
-                      {opt}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            {/* 3. Descrizione Guasto */}
-            <div className="mb-6">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5">
-                3. Descrivi il problema o la richiesta *
-              </label>
-              <textarea
-                required
-                rows={3}
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Es: Ho una perdita sotto il lavello che perde acqua quando apro il rubinetto..."
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                  formErrors.description ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200 bg-white'
+            {idx < STEPS.length - 1 && (
+              <div
+                className={`w-5 sm:w-10 h-0.5 ${
+                  idx < step ? "bg-indigo-500" : "bg-slate-200"
                 }`}
               />
-              {formErrors.description && (
-                <p className="text-xs text-rose-600 mt-1">{formErrors.description[0]}</p>
-              )}
-            </div>
-
-            {/* 4. Dati Contatto & Indirizzo */}
-            <div className="mb-8">
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2.5">
-                4. I tuoi recapiti per il sopralluogo
-              </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <div className="relative">
-                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                    <input
-                      required
-                      type="text"
-                      value={customerName}
-                      onChange={(e) => setCustomerName(e.target.value)}
-                      placeholder="Nome e Cognome *"
-                      className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                        formErrors.customerName ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200 bg-white'
-                      }`}
-                    />
-                  </div>
-                  {formErrors.customerName && (
-                    <p className="text-xs text-rose-600 mt-1">{formErrors.customerName[0]}</p>
-                  )}
-                </div>
-
-                <div>
-                  <div className="relative">
-                    <Phone className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                    <input
-                      required
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="Cellulare per contatto rapido *"
-                      className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                        formErrors.phone ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200 bg-white'
-                      }`}
-                    />
-                  </div>
-                  {formErrors.phone && (
-                    <p className="text-xs text-rose-600 mt-1">{formErrors.phone[0]}</p>
-                  )}
-                </div>
-
-                <div>
-                  <div className="relative">
-                    <MapPin className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                    <input
-                      required
-                      type="text"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="Indirizzo completo (Via, Civico, Città) *"
-                      className={`w-full pl-10 pr-3.5 py-2.5 rounded-xl border text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                        formErrors.address ? 'border-rose-400 bg-rose-50/40' : 'border-slate-200 bg-white'
-                      }`}
-                    />
-                  </div>
-                  {formErrors.address && (
-                    <p className="text-xs text-rose-600 mt-1">{formErrors.address[0]}</p>
-                  )}
-                </div>
-
-                <div>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Email per ricevuta (opzionale)"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Privacy & Invia Button */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-4 border-t border-slate-100">
-              <div className="flex items-center gap-2 text-xs text-slate-500">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                Dati trattati solo per l&apos;intervento nel rispetto del GDPR.
-              </div>
-
-              <button
-                type="submit"
-                disabled={isPending}
-                className="btn-taaaac w-full sm:w-auto px-7 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md hover:shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    Invio in corso...
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    Invia Richiesta di Intervento
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        )}
+            )}
+          </div>
+        ))}
       </div>
-    </section>
+
+      <p className="text-center text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        Step {step + 1} di {STEPS.length}: <span className="text-indigo-600 font-bold">{STEPS[step]}</span>
+      </p>
+
+      {/* Card Contenuto Step */}
+      <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm p-6 sm:p-8 space-y-6">
+        {errorMsg && (
+          <div className="p-3.5 bg-red-50 border border-red-200 rounded-xl text-red-700 text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{errorMsg}</span>
+          </div>
+        )}
+
+        {/* STEP 0: Tipo Guasto */}
+        {step === 0 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Di che tipo di assistenza hai bisogno?</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Seleziona la specializzazione dell&apos;artigiano richiesto.</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {SERVICE_OPTIONS.map((s, idx) => {
+                const Icon = s.icon;
+                const isSelected = serviceType === s.title;
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setServiceType(s.title)}
+                    className={`p-4 rounded-2xl border text-left transition-all flex items-start gap-3 ${
+                      isSelected
+                        ? "border-indigo-600 bg-indigo-50/60 ring-2 ring-indigo-200 shadow-xs"
+                        : "border-slate-200 hover:border-indigo-300 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-slate-900">{s.title}</h4>
+                      <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">{s.desc}</p>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* STEP 1: Urgenza & Orario */}
+        {step === 1 && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Qual è l&apos;urgenza dell&apos;intervento?</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Definisci la priorità per consentire la corretta allocazione della squadra tecnica.</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[
+                {
+                  id: "ORDINARIO",
+                  label: "Ordinario",
+                  desc: "Intervento programmabile nei prossimi giorni.",
+                  badge: "Standard",
+                },
+                {
+                  id: "URGENTE",
+                  label: "Urgente",
+                  desc: "Risoluzione prioritaria entro 24 ore.",
+                  badge: "Priorità",
+                },
+                {
+                  id: "EMERGENZA",
+                  label: "Emergenza H24",
+                  desc: "Allagamento, guasto bloccante o porta bloccata.",
+                  badge: "Subito",
+                },
+              ].map((lvl) => {
+                const isSelected = urgency === lvl.id;
+                return (
+                  <button
+                    key={lvl.id}
+                    type="button"
+                    onClick={() => setUrgency(lvl.id as any)}
+                    className={`p-4 rounded-2xl border text-left transition-all ${
+                      isSelected
+                        ? lvl.id === "EMERGENZA"
+                          ? "border-red-500 bg-red-50 ring-2 ring-red-200"
+                          : "border-indigo-600 bg-indigo-50/60 ring-2 ring-indigo-200"
+                        : "border-slate-200 hover:border-indigo-200 hover:bg-slate-50"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-sm text-slate-900">{lvl.label}</span>
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
+                          lvl.id === "EMERGENZA"
+                            ? "bg-red-100 text-red-700"
+                            : "bg-indigo-100 text-indigo-700"
+                        }`}
+                      >
+                        {lvl.badge}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">{lvl.desc}</p>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                Fascia Oraria Preferita
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {TIME_OPTIONS.map((time) => (
+                  <button
+                    key={time}
+                    type="button"
+                    onClick={() => setPreferredTime(time)}
+                    className={`py-3 px-3 rounded-xl border text-left text-xs font-bold transition-all ${
+                      preferredTime === time
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-xs"
+                        : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700"
+                    }`}
+                  >
+                    {time}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 2: Indirizzo e Descrizione Guasto */}
+        {step === 2 && (
+          <div className="space-y-4 animate-in fade-in duration-200">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Dove dobbiamo intervenire?</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Indica la posizione dell&apos;immobile e descrivi brevemente il problema.</p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Indirizzo, Civico, Città *
+              </label>
+              <input
+                type="text"
+                required
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Es. Via Roma 42, Milano (Piano 3, Int. 8)"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden font-medium"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Descrizione del Guasto o Richiesta *
+              </label>
+              <textarea
+                rows={3}
+                required
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Descrivi brevemente cosa succede (es. perdita tubo sotto il lavandino, salvavita che non risale...)"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3: Dati Contatto */}
+        {step === 3 && (
+          <div className="space-y-4 animate-in fade-in duration-200">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Chi possiamo contattare?</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Un tecnico ti chiamerà per concordare l&apos;uscita e il preventivo.</p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Nome e Cognome *
+              </label>
+              <input
+                type="text"
+                required
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                placeholder="Mario Rossi"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden font-medium"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Telefono Cellulare per Reperibilità *
+              </label>
+              <input
+                type="tel"
+                required
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+39 340 1234567"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden font-medium"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">
+                Email (Opzionale per invio rapportino digitale)
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="mario.rossi@email.it"
+                className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+              />
+            </div>
+
+            <div className="pt-2">
+              <label className="flex items-start gap-2 text-xs text-slate-600 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={privacyAccepted}
+                  onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                  className="w-4 h-4 accent-indigo-600 rounded mt-0.5 cursor-pointer"
+                />
+                <span>
+                  Accetto l&apos;informativa sulla privacy (GDPR) e autorizzo il contatto telefonico per l&apos;intervento tecnico richiesto.
+                </span>
+              </label>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 4: Riepilogo & Invio */}
+        {step === 4 && (
+          <div className="space-y-5 animate-in fade-in duration-200">
+            <div>
+              <h2 className="text-lg font-bold text-slate-900">Riepilogo della Richiesta</h2>
+              <p className="text-xs text-slate-500 mt-0.5">Verifica i dati prima di trasmettere il ticket alla squadra tecnica.</p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-3 text-xs sm:text-sm">
+              <div className="flex justify-between pb-2 border-b border-slate-200/80">
+                <span className="text-slate-500">Servizio Richiesto</span>
+                <span className="font-bold text-slate-900">{serviceType}</span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-slate-200/80">
+                <span className="text-slate-500">Priorità & Urgenza</span>
+                <span className="font-bold text-indigo-600">{urgency}</span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-slate-200/80">
+                <span className="text-slate-500">Fascia Oraria</span>
+                <span className="font-bold text-slate-900">{preferredTime}</span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-slate-200/80">
+                <span className="text-slate-500">Indirizzo Intervento</span>
+                <span className="font-bold text-slate-900">{address}</span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-slate-200/80">
+                <span className="text-slate-500">Richiedente</span>
+                <span className="font-bold text-slate-900">{customerName}</span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-slate-200/80">
+                <span className="text-slate-500">Telefono Reperibilità</span>
+                <span className="font-bold text-slate-900">{phone}</span>
+              </div>
+              <div className="pt-2 text-xs text-slate-600">
+                <span className="font-bold">Dettaglio Guasto:</span> {description}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Pulsanti Navigazione Step */}
+        <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+          {step > 0 ? (
+            <button
+              type="button"
+              onClick={goBack}
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Indietro
+            </button>
+          ) : (
+            <div />
+          )}
+
+          {step < STEPS.length - 1 ? (
+            <button
+              type="button"
+              onClick={goNext}
+              className="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-colors"
+            >
+              <span>Continua</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={isPending}
+              onClick={handleFinalSubmit}
+              className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white text-xs sm:text-sm font-bold shadow-md transition-all"
+            >
+              {isPending ? "Invio in corso..." : "Invia Richiesta Intervento 🔧"}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
