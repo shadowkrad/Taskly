@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTenant } from './tenant-provider';
-import { Wrench, Phone, MessageSquare, ExternalLink, ArrowLeft } from 'lucide-react';
+import { Wrench, Phone, MessageSquare, ExternalLink, ArrowLeft, Lock } from 'lucide-react';
 import { LogoutButton } from './admin/LogoutButton';
 
 export function Navbar() {
@@ -168,6 +168,22 @@ export function Navbar() {
             <Phone className="w-4 h-4" />
             <span>Chiama Subito</span>
           </a>
+
+          <Link
+            href="/prenotazione"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all"
+          >
+            <span>Prenota Intervento</span>
+          </Link>
+
+          {/* Discreet Staff / Admin Login */}
+          <Link
+            href="/login"
+            title="Area Riservata Staff"
+            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
+          >
+            <Lock className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </header>
