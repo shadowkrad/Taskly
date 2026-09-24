@@ -23,8 +23,17 @@ export async function loginAction(
   password: string
 ): Promise<AuthResponse> {
   const cleanEmail = email.trim().toLowerCase();
-  const targetEmail = (process.env.ADMIN_EMAIL || DEFAULT_ADMIN_CREDENTIALS.email).toLowerCase();
-  const targetPassword = process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_CREDENTIALS.password;
+  const targetEmail = (
+    process.env.INITIAL_ADMIN_EMAIL ||
+    process.env.ADMIN_EMAIL ||
+    DEFAULT_ADMIN_CREDENTIALS.email
+  ).toLowerCase();
+  const targetPassword =
+    process.env.INITIAL_ADMIN_PASSWORD ||
+    process.env.ADMIN_PASSWORD ||
+    process.env.INITIAL_ADMIN_PIN ||
+    process.env.ADMIN_PIN ||
+    DEFAULT_ADMIN_CREDENTIALS.password;
 
   if (cleanEmail !== targetEmail || password !== targetPassword) {
     return {

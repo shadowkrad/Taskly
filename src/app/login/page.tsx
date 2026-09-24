@@ -56,25 +56,27 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
         </div>
 
         {/* Demo Credentials Box */}
-        <div className="mb-5 p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200/80 text-xs text-indigo-900">
-          <div className="flex items-center justify-between mb-1">
-            <span className="font-bold flex items-center gap-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-              Credenziali Demo Predefinite:
-            </span>
-            <button
-              type="button"
-              onClick={fillDemoCredentials}
-              className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 underline cursor-pointer"
-            >
-              Compila rapido
-            </button>
+        {process.env.NEXT_PUBLIC_IS_DEMO !== 'false' && (
+          <div className="mb-5 p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200/80 text-xs text-indigo-900">
+            <div className="flex items-center justify-between mb-1">
+              <span className="font-bold flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                Credenziali Demo Predefinite:
+              </span>
+              <button
+                type="button"
+                onClick={fillDemoCredentials}
+                className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 underline cursor-pointer"
+              >
+                Compila rapido
+              </button>
+            </div>
+            <div className="font-mono text-[11px] space-y-0.5 mt-1 text-indigo-800">
+              <div>Email: <strong>admin@taskly.it</strong></div>
+              <div>Password: <strong>Admin123!</strong></div>
+            </div>
           </div>
-          <div className="font-mono text-[11px] space-y-0.5 mt-1 text-indigo-800">
-            <div>Email: <strong>admin@taskly.it</strong></div>
-            <div>Password: <strong>Admin123!</strong></div>
-          </div>
-        </div>
+        )}
 
         {error && (
           <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">

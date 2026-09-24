@@ -95,11 +95,18 @@ export async function getTasks(filters?: {
     });
 
     if (!tasks || tasks.length === 0) {
+      if (process.env.IS_DEMO === 'false') {
+        return [];
+      }
       return filterFallbackTasks(filters);
     }
 
     return tasks;
   } catch (error) {
+    if (process.env.IS_DEMO === 'false') {
+      console.warn('[getTasks] Errore DB in produzione:', error);
+      return [];
+    }
     console.warn('[getTasks] Fallback a compiti demo realistici:', error);
     return filterFallbackTasks(filters);
   }

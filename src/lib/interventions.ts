@@ -153,6 +153,9 @@ export async function getServiceRequests(filterStatus?: string): Promise<Service
     });
 
     if (!items || items.length === 0) {
+      if (process.env.IS_DEMO === 'false') {
+        return [];
+      }
       return filterStatus && filterStatus !== 'ALL'
         ? SAMPLE_SERVICE_REQUESTS.filter((r) => r.status === filterStatus)
         : SAMPLE_SERVICE_REQUESTS;
@@ -160,6 +163,10 @@ export async function getServiceRequests(filterStatus?: string): Promise<Service
 
     return items;
   } catch (error) {
+    if (process.env.IS_DEMO === 'false') {
+      console.warn('[getServiceRequests] Errore query in produzione:', error);
+      return [];
+    }
     console.warn('[getServiceRequests] Fallback a dati dimostrativi:', error);
     return filterStatus && filterStatus !== 'ALL'
       ? SAMPLE_SERVICE_REQUESTS.filter((r) => r.status === filterStatus)
@@ -188,6 +195,9 @@ export async function getServiceRequestById(id: string): Promise<ServiceRequestI
 }
 
 export async function seedSampleInterventionsIfEmpty() {
+  if (process.env.IS_DEMO === 'false') {
+    return;
+  }
   try {
     const count = await prisma.serviceRequest.count();
     if (count === 0) {
