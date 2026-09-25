@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Settings, Save, Clock, Shield, CheckCircle2 } from "lucide-react";
 import { useTenantConfig } from "@/components/providers/TenantConfigProvider";
+import EmailSettingsCard from "@/components/dashboard/EmailSettingsCard";
 
 export default function ImpostazioniPage() {
   const { config } = useTenantConfig();
@@ -35,6 +36,9 @@ export default function ImpostazioniPage() {
           Impostazioni salvate con successo per il tenant corrente!
         </div>
       )}
+
+      {/* Canale Notifiche Email Taaaac Mail Engine */}
+      <EmailSettingsCard />
 
       <form onSubmit={handleSave} className="space-y-6">
         <div className="p-6 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4">
