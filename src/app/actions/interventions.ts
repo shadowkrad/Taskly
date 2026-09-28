@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { prisma, ensureDatabaseSchema } from '@/lib/prisma';
+import { sendNotificationMail } from '@/lib/taaaac-mailer';
 import {
   serviceRequestSchema,
   workReportSchema,
@@ -50,6 +51,28 @@ export async function createServiceRequest(
         status: 'IN_ATTESA',
       },
     });
+
+    if (data.email) {
+      sendNotificationMail({
+        to: data.email,
+        subject: `Richiesta di Intervento Ricevuta — Taskly Manutenzioni`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 25px; border: 1px solid #bfdbfe; border-radius: 16px; background: #ffffff;">
+            <h2 style="color: #2563eb; margin-top: 0;">🔧 Richiesta di Intervento Ricevuta!</h2>
+            <p style="color: #334155; font-size: 15px;">Gentile <strong>${data.customerName}</strong>,</p>
+            <p style="color: #475569; font-size: 14px;">Abbiamo ricevuto la tua richiesta di assistenza per <strong>${data.serviceType}</strong> e il nostro team tecnico la sta prendendo in carico.</p>
+            <div style="background: #eff6ff; border-left: 4px solid #2563eb; padding: 14px 18px; border-radius: 8px; margin: 20px 0; font-size: 14px;">
+              <p style="margin: 4px 0; color: #1e3a8a;"><strong>Indirizzo:</strong> ${data.address}</p>
+              <p style="margin: 4px 0; color: #1e3a8a;"><strong>Urgenza:</strong> ${data.urgency}</p>
+              <p style="margin: 4px 0; color: #1e3a8a;"><strong>Descrizione guasto:</strong> ${data.description}</p>
+              ${data.preferredTime ? `<p style="margin: 4px 0; color: #1e3a8a;"><strong>Orario preferito:</strong> ${data.preferredTime}</p>` : ""}
+            </div>
+            <p style="color: #64748b; font-size: 13px;">Un nostro tecnico ti contatterà al numero telefonico fornito per confermare l'orario di arrivo.</p>
+          </div>
+        `,
+        senderName: "Taskly Manutenzioni",
+      }).catch((mailErr) => console.error("Errore invio email Taskly:", mailErr));
+    }
 
     revalidatePath('/');
     revalidatePath('/admin');
