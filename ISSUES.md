@@ -6,22 +6,11 @@ Registro ufficiale delle issue, feature request e standard di piattaforma del ta
 
 ## 🟢 Issue Attive / In Backlog
 
-### 📌 Issue #PWA-1: Shortcut App Desktop/Mobile integrata nel Menu Laterale (Standard Suite Taaaac)
-- **Modulo:** `Dashboard > UI/UX & PWA` (Standard suite Taaaac)
-- **Priorità:** Alta
-- **Stato:** 📝 Pianificata / In Backlog
+*Al momento non ci sono issue bloccanti aperte. Tutte le funzionalità standard suite sono state implementate.*
 
-#### Descrizione & Principi UX
-Implementare la funzionalità PWA cross-platform (testata e perfezionata su Schedly) per consentire al team e ai collaboratori di installare Taskly direttamente sul desktop o sullo smartphone come applicazione autonoma sempre pronta per la consultazione e gestione delle task.
+---
 
-#### Linee Guida di Design & Requisiti
-1. **Zero Banner Invasivi sulla Schermata Operativa**:
-   - Nessun banner fisso o barra in cima alla pagina: la testata del menu e le bacheche task/Kanban devono mantenere il **100% dell'altezza dello schermo** senza ingombri visivi.
-2. **Integrazione Pulita nel Drawer Laterale (`☰`)**:
-   - Inserire la voce *"📲 Installa App · Aggiungi a Home / Desktop [PWA]"* all'interno del menu laterale a scomparsa.
-   - Se l'applicazione è già aperta in modalità autonoma (`display-mode: standalone`), il pulsante si nasconde automaticamente.
-3. **Modale Guidato Centrato a Tutto Schermo (`createPortal`)**:
-   - Al tocco di *"Installa App"*, il drawer si chiude e il modale compare **immediatamente al centro dello schermo** sopra a tutto (`createPortal` su `document.body`, `z-[9999]`), senza rimanere schiacciato o vincolato alla colonna del menu.
-   - **iOS / Safari**: guida grafica a 3 passaggi (Condividi ➔ Aggiungi alla schermata Home).
-   - **Android / Chrome**: prompt nativo immediato di sistema (`beforeinstallprompt`).
-   - **Desktop**: istruzioni per installazione da barra degli indirizzi Chrome/Edge.
+## 🏁 Storico Issue Completate
+
+- **Issue #IMP-1**: Riorganizzazione modulare delle Impostazioni a schede e sottomenu (Attività & Sede, Reperibilità & Tariffe, Email, WhatsApp & Urgenze, Aspetto & Brand) conforme allo standard Schedly.
+- **Issue #PWA-1**: Shortcut App Desktop/Mobile (PWA Install Menu) integrata nel menu laterale con modale guidato `createPortal` per iOS/Android/PC e `manifest.json`.
