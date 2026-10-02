@@ -7,10 +7,10 @@ import { Navbar } from '@/components/navbar';
 export const metadata: Metadata = {
   title: 'Taskly • Gestione Attività Modulare (Taaaac Ecosystem)',
   description: 'Applicativo verticale Taskly integrato con la console centrale Taaaac Core',
-  manifest: '/manifest.json',
+  manifest: '/manifest.webmanifest',
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'default',
+    statusBarStyle: 'black-translucent',
     title: 'Taskly',
   },
 };

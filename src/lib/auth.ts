@@ -121,4 +121,31 @@ export async function verifySessionToken(token?: string): Promise<SessionData | 
   }
 }
 
+import { cookies } from 'next/headers';
+
+/**
+ * Imposta il cookie di sessione per l'amministratore / tecnico Taskly
+ */
+export async function setAdminSession(email?: string): Promise<void> {
+  const adminEmail = email || process.env.ADMIN_EMAIL || DEFAULT_ADMIN_CREDENTIALS.email;
+  const token = await createSessionToken(adminEmail);
+  const cookieStore = await cookies();
+  cookieStore.set(SESSION_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 7 * 24 * 60 * 60, // 7 giorni
+  });
+}
+
+/**
+ * Cancella il cookie di sessione
+ */
+export async function clearAdminSession(): Promise<void> {
+  const cookieStore = await cookies();
+  cookieStore.delete(SESSION_COOKIE_NAME);
+}
+
 export { SESSION_COOKIE_NAME };
+

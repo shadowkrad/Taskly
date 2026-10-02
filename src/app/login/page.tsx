@@ -3,7 +3,8 @@
 import React, { useState, useTransition, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Wrench, Lock, Mail, ArrowLeft, Loader2, AlertCircle, Sparkles, Key } from 'lucide-react';
+import { Wrench, Lock, Mail, ArrowLeft, Loader2, AlertCircle, Sparkles, Key, Fingerprint, Smartphone } from 'lucide-react';
+import { startAuthentication } from '@simplewebauthn/browser';
 import { loginAction } from '@/app/actions/auth';
 
 interface LoginPageProps {
@@ -16,9 +17,50 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
   const callbackUrl = params?.callbackUrl || '/admin';
 
   const [isPending, startTransition] = useTransition();
+  const [biometricLoading, setBiometricLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  const handleDeviceLogin = async () => {
+    setError(null);
+    setBiometricLoading(true);
+    try {
+      const optRes = await fetch('/api/auth/device/login-options', {
+        method: 'POST',
+      });
+
+      if (!optRes.ok) {
+        const err = await optRes.json();
+        throw new Error(err.error || 'Nessun dispositivo autorizzato.');
+      }
+
+      const options = await optRes.json();
+      const asseResp = await startAuthentication({ optionsJSON: options });
+
+      const verifyRes = await fetch('/api/auth/device/login-verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          response: asseResp,
+          expectedChallenge: options.challenge,
+        }),
+      });
+
+      if (!verifyRes.ok) {
+        const err = await verifyRes.json();
+        throw new Error(err.error || 'Verifica biometrica fallita');
+      }
+
+      router.push(callbackUrl);
+      router.refresh();
+    } catch (err: any) {
+      console.warn('[handleDeviceLogin] errore:', err);
+      setError(err.message || 'Accesso con dispositivo non riuscito.');
+    } finally {
+      setBiometricLoading(false);
+    }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,6 +126,36 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
             <span>{error}</span>
           </div>
         )}
+
+        {/* Accesso Rapido Biometrico PWA v1.0.2 */}
+        <div className="mb-5">
+          <button
+            type="button"
+            onClick={handleDeviceLogin}
+            disabled={biometricLoading || isPending}
+            className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shadow-xs flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-60 border border-slate-800 active:scale-98"
+          >
+            {biometricLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                <span>Verifica biometrica in corso...</span>
+              </>
+            ) : (
+              <>
+                <Fingerprint className="w-4 h-4 text-emerald-400" />
+                <span>Accedi con FaceID / Impronta / PIN</span>
+              </>
+            )}
+          </button>
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center text-[11px] uppercase tracking-wider">
+              <span className="bg-white px-2 text-slate-400 font-semibold">oppure con credenziali</span>
+            </div>
+          </div>
+        </div>
 
         {/* Form Login */}
         <form onSubmit={handleSubmit} className="space-y-4">

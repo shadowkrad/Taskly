@@ -17,9 +17,10 @@ import {
   Euro,
 } from "lucide-react";
 import EmailSettingsCard from "@/components/dashboard/EmailSettingsCard";
+import RegisteredDevicesCard from "@/components/dashboard/RegisteredDevicesCard";
 import { useTenantConfig } from "@/components/providers/TenantConfigProvider";
 
-type SettingsTab = "attivita" | "reperibilita" | "email" | "whatsapp" | "aspetto";
+type SettingsTab = "attivita" | "reperibilita" | "email" | "whatsapp" | "dispositivi" | "aspetto";
 
 interface TabItem {
   id: SettingsTab;
@@ -57,6 +58,13 @@ const TABS: TabItem[] = [
     shortLabel: "WhatsApp",
     icon: "💬",
     description: "Notifiche automatiche WhatsApp su apertura guasti e arrivo tecnico",
+  },
+  {
+    id: "dispositivi",
+    label: "Dispositivi PWA",
+    shortLabel: "Dispositivi",
+    icon: "📱",
+    description: "Accesso biometrico FaceID/PIN e revoca/disconnessione palmari tecnici da remoto",
   },
   {
     id: "aspetto",
@@ -122,7 +130,7 @@ export default function TasklyImpostazioniPage() {
             Impostazioni Taskly
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Configura reperibilità H24, tariffe di chiamata, notifiche di pronto intervento e brand.
+            Configura reperibilità H24, tariffe di chiamata, dispositivi palmari PWA e notifiche.
           </p>
         </div>
 
@@ -373,7 +381,14 @@ export default function TasklyImpostazioniPage() {
         </div>
       )}
 
-      {/* TAB 5: ASPETTO & BRAND */}
+      {/* TAB 5: DISPOSITIVI PWA */}
+      {activeTab === "dispositivi" && (
+        <div className="space-y-4">
+          <RegisteredDevicesCard />
+        </div>
+      )}
+
+      {/* TAB 6: ASPETTO & BRAND */}
       {activeTab === "aspetto" && (
         <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
