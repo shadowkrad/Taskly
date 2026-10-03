@@ -120,9 +120,18 @@ export function Navbar() {
         {/* Brand & Logo */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-xs font-bold text-lg brand-bg group-hover:scale-105 transition-transform">
-              <Wrench className="w-5 h-5" />
-            </div>
+            {config.theme.clientLogo ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={config.theme.clientLogo}
+                alt={config.theme.brandName || "Taskly"}
+                className="h-10 w-auto max-w-[160px] object-contain rounded-xl"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-xs font-bold text-lg brand-bg group-hover:scale-105 transition-transform">
+                <Wrench className="w-5 h-5" />
+              </div>
+            )}
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">

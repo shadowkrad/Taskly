@@ -105,3 +105,15 @@ model WebAuthnChallenge {
   @@index([expiresAt])
 }
 
+model TenantLocalCache {
+  id           String   @id @default("singleton")
+  brandName    String   @default("Taskly • Taaaac Suite")
+  logoUrl      String?
+  faviconUrl   String?
+  primaryColor String   @default("#1e1b4b")
+  accentColor  String   @default("#4f46e5")
+  email        String?
+  phone        String?
+  updatedAt    DateTime @updatedAt
+}
+

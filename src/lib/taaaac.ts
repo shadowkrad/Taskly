@@ -1,3 +1,5 @@
+import { prisma } from './prisma';
+
 export type LicenseStatus = 'ATTIVO' | 'SOSPESO' | 'IN_SCADENZA';
 
 export type TaaaacAddon =
@@ -11,6 +13,7 @@ export type TaaaacAddon =
 export interface TenantTheme {
   brandName: string;
   clientLogo?: string;
+  faviconUrl?: string;
   primaryColor: string;
   accentColor: string;
 }
@@ -49,50 +52,58 @@ export async function fetchTenantConfig(): Promise<TenantConfig> {
   const token = process.env.TAAAAC_TOKEN || '';
   const baseUrl = process.env.TAAAAC_CORE_URL || 'https://taaaac.eu';
 
-  // In assenza di token o se siamo in modalità demo locale, usiamo la configurazione predefinita
-  if (!token) {
-    return {
-      ...DEFAULT_TENANT_CONFIG,
-      domain,
-    };
-  }
+  let config: TenantConfig = {
+    ...DEFAULT_TENANT_CONFIG,
+    domain,
+  };
 
-  try {
-    const url = `${baseUrl}/api/public/tenant-config?domain=${encodeURIComponent(domain)}&token=${encodeURIComponent(token)}`;
-    const res = await fetch(url, {
-      next: { revalidate: 300 }, // cache 5 minuti
-      headers: {
-        'Accept': 'application/json',
-      },
-    });
+  if (token) {
+    try {
+      const url = `${baseUrl}/api/public/tenant-config?domain=${encodeURIComponent(domain)}&token=${encodeURIComponent(token)}`;
+      const res = await fetch(url, {
+        next: { revalidate: 300 }, // cache 5 minuti
+        headers: {
+          'Accept': 'application/json',
+        },
+      });
 
-    if (!res.ok) {
-      console.warn(`[Taaaac Core] Errore risposta ${res.status} per domain: ${domain}. Utilizzo configurazione fallback.`);
-      return {
-        ...DEFAULT_TENANT_CONFIG,
-        domain,
-      };
+      if (res.ok) {
+        const data = await res.json();
+        config = {
+          domain: data.domain || domain,
+          licenseStatus: (data.licenseStatus as LicenseStatus) || 'ATTIVO',
+          licenseExpiry: data.licenseExpiry,
+          addons: Array.isArray(data.addons) ? data.addons : DEFAULT_TENANT_CONFIG.addons,
+          theme: {
+            brandName: data.theme?.brandName || DEFAULT_TENANT_CONFIG.theme.brandName,
+            clientLogo: data.theme?.clientLogo,
+            faviconUrl: data.theme?.faviconUrl,
+            primaryColor: data.theme?.primaryColor || DEFAULT_TENANT_CONFIG.theme.primaryColor,
+            accentColor: data.theme?.accentColor || DEFAULT_TENANT_CONFIG.theme.accentColor,
+          },
+          metadata: data.metadata,
+        };
+      }
+    } catch (error) {
+      console.warn('[Taaaac Core] Eccezione durante il fetch tenant-config:', error);
     }
-
-    const data = await res.json();
-    return {
-      domain: data.domain || domain,
-      licenseStatus: (data.licenseStatus as LicenseStatus) || 'ATTIVO',
-      licenseExpiry: data.licenseExpiry,
-      addons: Array.isArray(data.addons) ? data.addons : DEFAULT_TENANT_CONFIG.addons,
-      theme: {
-        brandName: data.theme?.brandName || DEFAULT_TENANT_CONFIG.theme.brandName,
-        clientLogo: data.theme?.clientLogo,
-        primaryColor: data.theme?.primaryColor || DEFAULT_TENANT_CONFIG.theme.primaryColor,
-        accentColor: data.theme?.accentColor || DEFAULT_TENANT_CONFIG.theme.accentColor,
-      },
-      metadata: data.metadata,
-    };
-  } catch (error) {
-    console.error('[Taaaac Core] Eccezione durante il fetch tenant-config:', error);
-    return {
-      ...DEFAULT_TENANT_CONFIG,
-      domain,
-    };
   }
+
+  // Override con cache SQLite locale
+  try {
+    const cached = await prisma.tenantLocalCache.findUnique({
+      where: { id: "singleton" },
+    });
+    if (cached) {
+      if (cached.brandName) config.theme.brandName = cached.brandName;
+      if (cached.logoUrl) config.theme.clientLogo = cached.logoUrl;
+      if (cached.faviconUrl) config.theme.faviconUrl = cached.faviconUrl;
+      if (cached.primaryColor) config.theme.primaryColor = cached.primaryColor;
+      if (cached.accentColor) config.theme.accentColor = cached.accentColor;
+    }
+  } catch {
+    // silente se db non ancora inizializzato
+  }
+
+  return config;
 }

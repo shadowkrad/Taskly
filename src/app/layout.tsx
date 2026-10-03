@@ -4,16 +4,23 @@ import { fetchTenantConfig } from '@/lib/taaaac';
 import { TenantProvider } from '@/components/tenant-provider';
 import { Navbar } from '@/components/navbar';
 
-export const metadata: Metadata = {
-  title: 'Taskly • Gestione Attività Modulare (Taaaac Ecosystem)',
-  description: 'Applicativo verticale Taskly integrato con la console centrale Taaaac Core',
-  manifest: '/manifest.webmanifest',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'Taskly',
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const config = await fetchTenantConfig();
+  return {
+    title: `${config.theme.brandName || "Taskly"} • Gestione Attività Modulare`,
+    description: 'Applicativo verticale Taskly integrato con la console centrale Taaaac Core',
+    manifest: '/manifest.webmanifest',
+    icons: {
+      icon: config.theme.faviconUrl || "/icon.svg",
+      apple: config.theme.faviconUrl || "/icon.svg",
+    },
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'black-translucent',
+      title: config.theme.brandName || 'Taskly',
+    },
+  };
+}
 
 export const viewport = {
   themeColor: '#4f46e5',
@@ -30,6 +37,10 @@ export default async function RootLayout({
 
   return (
     <html lang="it">
+      <head>
+        <link rel="icon" href={tenantConfig.theme.faviconUrl || "/icon.svg"} />
+        <link rel="apple-touch-icon" href={tenantConfig.theme.faviconUrl || "/icon.svg"} />
+      </head>
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-indigo-500 selection:text-white">
         <TenantProvider config={tenantConfig}>
           <div className="min-h-screen flex flex-col justify-between">
