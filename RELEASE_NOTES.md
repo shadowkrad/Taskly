@@ -1,15 +1,16 @@
-# 🔧 Taskly — Release Notes v1.0.1
+# 🔧 Taskly — Release Notes v1.0.2
 
-## Novità della Versione 1.0.1
+## Novità della Versione 1.0.2
 
-### 1. 📲 Shortcut App per Smartphone e Tablet Cantiere (PWA)
-- Aggiunta la voce *"📲 Installa App · Aggiungi a Home / Desktop"* nel menu laterale (`☰`), senza banner invasivi sulla lista interventi.
-- Modale guidato a schermo intero (`createPortal` su `document.body`, `z-[9999]`) con istruzioni dedicate per iOS Safari, prompt 1-click per Android e scorciatoia per browser Desktop.
+### 1. 🎨 Personalizzazione Brand: Logo Ditta & Favicon Portale
+- Possibilità di caricare il logo aziendale da *Dashboard > Impostazioni > Aspetto & Brand* con compressione automatica WebP per intestazione rapportini e portale clienti.
+- Favicon 128x128 personalizzata per tab del browser e icona PWA installata su smartphone e tablet dei tecnici.
+- Anteprima live di visualizzazione prima del salvataggio.
 
-### 2. ⚙️ Impostazioni Modulari a 5 Schede
-- Riorganizzazione della sezione `/dashboard/impostazioni` con navigazione a schede:
-  - 🏢 **Attività & Sede**: Ragione sociale ditta, P.IVA, responsabile tecnico, magazzino e recapiti;
-  - ⏰ **Reperibilità & Tariffe**: Pronto intervento H24, diritto di chiamata fisso, tariffa oraria standard e festiva/notturna;
-  - 📧 **Email & Notifiche**: Casella Taaaac Mail Engine e notifiche ticket;
-  - 💬 **WhatsApp & Urgenze**: Notifiche automatiche di assegnazione guasto e arrivo tecnico;
-  - 🎨 **Aspetto & Brand**: Logo aziendale, tema indaco e intestazione rapportino di lavoro.
+### 2. ⚙️ Impostazioni Moderne a 2 Colonne (Stile Stripe)
+- Sezione impostazioni riorganizzata con interfaccia moderna a due colonne, icone Lucide e raggruppamento per aree operative.
+- Configurazione avanzata reperibilità H24, tariffe orarie, diritto di chiamata e canali di notifica ticket d'intervento.
+
+### 3. 📲 Accesso Biometrico PWA & Gestione Dispositivi (WebAuthn)
+- Login con impronta digitale o Face ID per tecnici in mobilità e sul cantiere.
+- Monitoraggio dei device registrati con disconnessione remota rapida di smartphone o tablet smarriti.
