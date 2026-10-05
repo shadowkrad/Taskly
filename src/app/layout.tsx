@@ -6,9 +6,13 @@ import { Navbar } from '@/components/navbar';
 
 export async function generateMetadata(): Promise<Metadata> {
   const config = await fetchTenantConfig();
+  const brand = config.theme.brandName || "Assistenza Tecnica & Interventi";
   return {
-    title: `${config.theme.brandName || "Taskly"} • Gestione Attività Modulare`,
-    description: 'Applicativo verticale Taskly integrato con la console centrale Taaaac Core',
+    title: {
+      default: brand,
+      template: `%s | ${brand}`,
+    },
+    description: `Richiesta interventi, assistenza tecnica e manutenzione per ${brand}`,
     manifest: '/manifest.webmanifest',
     icons: {
       icon: config.theme.faviconUrl || "/icon.svg",
@@ -17,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
     appleWebApp: {
       capable: true,
       statusBarStyle: 'black-translucent',
-      title: config.theme.brandName || 'Taskly',
+      title: brand,
     },
   };
 }
