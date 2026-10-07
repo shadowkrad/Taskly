@@ -24,6 +24,11 @@ export interface TenantConfig {
   licenseExpiry?: string;
   addons: TaaaacAddon[];
   theme: TenantTheme;
+  contact?: {
+    phone?: string;
+    email?: string;
+    address?: string;
+  };
   metadata?: Record<string, unknown>;
 }
 
