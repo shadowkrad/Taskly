@@ -1,5 +1,28 @@
 # 🔧 Taskly — Release Notes
 
+## Novità della Versione 1.1.0 (In Sviluppo)
+
+### Novità in Lavorazione
+- Evoluzione interfaccia cantieri e pianificazione avanzata interventi
+- Firma digitale rapportini e allegati fotografici
+
+---
+
+## Novità della Versione 1.0.4
+
+### 1. 📅 Calendario Interventi & Cantieri Mobile
+- **Timeline Lavori Giornaliera & Settimanale**: Pianificazione interventi con indicazione chiara di luogo, cliente e durata stimata.
+- **Visualizzazione Touch per Tecnici**: Interfaccia ultra-reattiva studiata per l'uso su smartphone e tablet direttamente in cantiere o furgone.
+
+### 2. 📝 Schede Lavoro & Rapportini
+- **Stato Avanzamento Lavori**: Aggiornamento immediato dello stato dell'intervento (Pianificato, In Corso, Completato, Fatturato).
+- **Note Tecniche & Materiali**: Annotazione rapida dei dettagli dell'intervento e dei materiali impiegati.
+
+### 3. ⚡ Stabilità & Notifiche
+- **Sincronizzazione Cloud Istantanea**: Dati sincronizzati in tempo reale tra ufficio e operatori sul campo.
+
+---
+
 ## Novità della Versione 1.0.3
 
 ### 1. 🖼️ Sistema Brand & Vetrina Adattiva (Zero Deformazioni)
