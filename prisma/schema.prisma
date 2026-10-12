@@ -114,6 +114,7 @@ model TenantLocalCache {
   accentColor  String   @default("#4f46e5")
   email        String?
   phone        String?
+  showcaseConfig String? @default("{}")
   updatedAt    DateTime @updatedAt
 }
 

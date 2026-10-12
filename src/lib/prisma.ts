@@ -125,6 +125,31 @@ export async function ensureDatabaseSchema() {
       CREATE INDEX IF NOT EXISTS "WorkReport_serviceRequestId_idx" ON "WorkReport"("serviceRequestId");
     `);
 
+    // Tabella TenantLocalCache
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "TenantLocalCache" (
+        "id" TEXT NOT NULL PRIMARY KEY DEFAULT 'singleton',
+        "brandName" TEXT NOT NULL DEFAULT 'Taskly • Taaaac Suite',
+        "logoUrl" TEXT,
+        "faviconUrl" TEXT,
+        "primaryColor" TEXT NOT NULL DEFAULT '#1e1b4b',
+        "accentColor" TEXT NOT NULL DEFAULT '#4f46e5',
+        "email" TEXT,
+        "phone" TEXT,
+        "showcaseConfig" TEXT DEFAULT '{}',
+        "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // Hot-patch preventiva per database SQLite esistenti
+    try {
+      const info = (await prisma.$queryRawUnsafe(`PRAGMA table_info("TenantLocalCache");`)) as Array<{ name: string }>;
+      const exists = Array.isArray(info) && info.some((col) => col.name.toLowerCase() === "showcaseconfig");
+      if (!exists) {
+        await prisma.$executeRawUnsafe(`ALTER TABLE "TenantLocalCache" ADD COLUMN "showcaseConfig" TEXT DEFAULT '{}';`);
+      }
+    } catch {}
+
     globalForPrisma.schemaInitialized = true;
   } catch (error) {
     console.warn('[ensureDatabaseSchema] Fallito bootstrap schema SQLite:', error);
