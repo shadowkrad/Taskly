@@ -243,23 +243,25 @@ export default function TasklyImpostazioniPage() {
           </p>
         </div>
 
-        <button
-          onClick={() => handleSave()}
-          disabled={saving}
-          className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white font-bold text-sm rounded-xl shadow-xs shadow-indigo-600/20 transition-all cursor-pointer disabled:opacity-60"
-        >
-          {saving ? (
-            <>
-              <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              <span>Salvataggio...</span>
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4" />
-              <span>Salva Modifiche</span>
-            </>
-          )}
-        </button>
+        {activeTab !== "aspetto" && (
+          <button
+            onClick={() => handleSave()}
+            disabled={saving}
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white font-bold text-sm rounded-xl shadow-xs shadow-indigo-600/20 transition-all cursor-pointer disabled:opacity-60"
+          >
+            {saving ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <span>Salvataggio...</span>
+              </>
+            ) : (
+              <>
+                <Save className="w-4 h-4" />
+                <span>Salva Modifiche</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* Feedback Alert */}
