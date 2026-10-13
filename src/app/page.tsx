@@ -4,6 +4,7 @@ import { prisma, ensureDatabaseSchema } from '@/lib/prisma';
 import { HeroSection } from '@/components/public/HeroSection';
 import { ServicesSection } from '@/components/public/ServicesSection';
 import { PublicFooter } from '@/components/public/PublicFooter';
+import FloatingWhatsAppWidget from '@/components/public/FloatingWhatsAppWidget';
 import { parseShowcaseConfig } from '@/lib/showcase-defaults';
 import { Wrench, ArrowRight, Quote, ShieldCheck } from 'lucide-react';
 
@@ -138,6 +139,12 @@ export default async function HomePage() {
 
       {/* 6. Footer con orari e contatti */}
       <PublicFooter />
+
+      {/* Widget Flottante WhatsApp Vetrina */}
+      <FloatingWhatsAppWidget
+        phone={phone}
+        brandName={cache?.brandName || "Taskly"}
+      />
     </div>
   );
 }

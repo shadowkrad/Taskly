@@ -15,11 +15,13 @@ import {
   Search,
   ExternalLink,
   Euro,
+  MessageCircle,
 } from 'lucide-react';
 import type { ServiceRequestItem } from '@/lib/interventions';
 import { WorkReportModal } from './WorkReportModal';
 import { StatusModal } from './StatusModal';
 import { deleteServiceRequest } from '@/app/actions/interventions';
+import { generaLinkWhatsApp, generaMessaggioInterventoRichiesta } from '@/lib/whatsapp-client';
 
 interface AdminDashboardProps {
   initialInterventions: ServiceRequestItem[];
@@ -270,6 +272,34 @@ export function AdminDashboard({ initialInterventions }: AdminDashboardProps) {
                         <Phone className="w-3.5 h-3.5" />
                         {item.phone}
                       </a>
+
+                      {item.phone && (
+                        <a
+                          href={generaLinkWhatsApp(
+                            item.phone,
+                            generaMessaggioInterventoRichiesta({
+                              azienda: "Assistenza Tecnica",
+                              nomeCliente: item.customerName || "Cliente",
+                              titoloIntervento: item.serviceType || "Intervento",
+                              dataOra: item.scheduledAt
+                                ? new Date(item.scheduledAt).toLocaleDateString("it-IT", {
+                                    day: "numeric",
+                                    month: "long",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })
+                                : undefined,
+                            })
+                          )}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 font-bold text-emerald-700 hover:text-emerald-900 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors shadow-2xs cursor-pointer"
+                          title="Invia messaggio WhatsApp al cliente"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>WhatsApp</span>
+                        </a>
+                      )}
 
                       <a
                         href={`https://maps.google.com/?q=${encodeURIComponent(item.address)}`}
