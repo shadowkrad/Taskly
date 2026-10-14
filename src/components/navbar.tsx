@@ -115,34 +115,34 @@ export function Navbar() {
 
   // 3. Navbar 100% PUBBLICA per i Clienti della Vetrina (Come su Schedly: NESSUN tasto login/gestionale)
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 py-3 transition-all">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-8 h-16 sm:h-20 flex items-center transition-all shadow-xs">
+      <div className="w-full max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand & Logo */}
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3 group">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 shrink">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
             {config.theme.clientLogo ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={config.theme.clientLogo}
                 alt={config.theme.brandName || "Taskly"}
-                className="h-10 w-auto max-w-[160px] object-contain rounded-xl"
+                className="h-9 sm:h-10 w-auto max-w-[120px] sm:max-w-[160px] object-contain rounded-xl shrink-0"
               />
             ) : (
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-xs font-bold text-lg brand-bg group-hover:scale-105 transition-transform">
-                <Wrench className="w-5 h-5" />
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-white shadow-xs font-bold text-base sm:text-lg brand-bg group-hover:scale-105 transition-transform shrink-0">
+                <Wrench className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
             )}
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg truncate block">
                   {config.theme.brandName || 'Taskly'}
                 </span>
-                <span className="inline-flex text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/70">
+                <span className="inline-flex text-[10px] uppercase font-extrabold tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/70 shrink-0">
                   PRO
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-medium">
-                Pronto Intervento & Assistenza Tecnica
+              <p className="text-[11px] text-slate-400 font-medium truncate block">
+                Pronto Intervento &amp; Assistenza Tecnica
               </p>
             </div>
           </Link>
@@ -159,7 +159,7 @@ export function Navbar() {
         </nav>
 
         {/* Contatti Rapidi e Reperibilità Live (Solo per i clienti) */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
           <a
             href="https://wa.me/393401234567?text=Salve,%20ho%20bisogno%20di%20un%20intervento"
             target="_blank"
@@ -172,10 +172,11 @@ export function Navbar() {
 
           <a
             href="tel:+393401234567"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all"
+            className="flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold shadow-xs transition-all whitespace-nowrap shrink-0"
           >
-            <Phone className="w-4 h-4" />
-            <span>Chiama Subito</span>
+            <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>Chiama</span>
+            <span className="hidden sm:inline">Subito</span>
           </a>
 
           <Link
@@ -189,7 +190,7 @@ export function Navbar() {
           <Link
             href="/login"
             title="Area Riservata Staff"
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all cursor-pointer"
+            className="p-1.5 sm:p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all cursor-pointer shrink-0"
           >
             <Lock className="w-4 h-4" />
           </Link>

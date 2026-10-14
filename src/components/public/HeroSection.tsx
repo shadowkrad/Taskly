@@ -79,12 +79,12 @@ export function HeroSection({ showcase, phone }: HeroSectionProps) {
           </p>
 
           {/* CTA Buttons */}
-          <div className="pt-2 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 max-w-xl mx-auto sm:max-w-none">
             <a
               href={`tel:${telNumber.replace(/\s+/g, "")}`}
-              className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all active:scale-95"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm sm:text-base shadow-md hover:shadow-lg transition-all active:scale-95 whitespace-nowrap"
             >
-              <Phone className="w-5 h-5" />
+              <Phone className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
               <span>Chiama Subito: {telNumber}</span>
             </a>
 
@@ -92,23 +92,23 @@ export function HeroSection({ showcase, phone }: HeroSectionProps) {
               href={`https://wa.me/${telNumber.replace(/[^0-9]/g, "")}?text=Salve,%20ho%20bisogno%20di%20informazioni%20per%20un%20intervento`}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-all ${
+              className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl font-semibold text-sm sm:text-base transition-all whitespace-nowrap ${
                 coverImageUrl
                   ? "bg-white/20 hover:bg-white/30 text-white backdrop-blur-md border border-white/30"
                   : "bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300"
               }`}
             >
-              <MessageSquare className="w-5 h-5 text-emerald-500" />
+              <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-500 shrink-0" />
               <span>Scrivi su WhatsApp</span>
             </a>
 
             <Link
               href="/prenotazione"
               style={{ backgroundColor: accentColor }}
-              className="flex items-center gap-2 px-6 py-3.5 rounded-xl text-white font-bold text-sm sm:text-base shadow-md transition-all active:scale-95 hover:opacity-95"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl text-white font-bold text-sm sm:text-base shadow-md transition-all active:scale-95 hover:opacity-95 whitespace-nowrap"
             >
               <span>{ctaPrimary}</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 shrink-0" />
             </Link>
           </div>
 
