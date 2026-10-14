@@ -13,10 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${brand}`,
     },
     description: `Richiesta interventi, assistenza tecnica e manutenzione per ${brand}`,
-    manifest: '/manifest.webmanifest',
+    manifest: '/manifest.json',
     icons: {
       icon: config.theme.faviconUrl || "/icon.svg",
-      apple: config.theme.faviconUrl || "/icon.svg",
+      apple: config.theme.faviconUrl || "/apple-touch-icon.png",
     },
     appleWebApp: {
       capable: true,
@@ -43,7 +43,8 @@ export default async function RootLayout({
     <html lang="it">
       <head>
         <link rel="icon" href={tenantConfig.theme.faviconUrl || "/icon.svg"} />
-        <link rel="apple-touch-icon" href={tenantConfig.theme.faviconUrl || "/icon.svg"} />
+        <link rel="apple-touch-icon" sizes="180x180" href={tenantConfig.theme.faviconUrl || "/apple-touch-icon.png"} />
+        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-indigo-500 selection:text-white">
         <TenantProvider config={tenantConfig}>

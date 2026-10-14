@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="tasklyBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="tasklyGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.28"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
+    </linearGradient>
+    <filter id="tasklyDrop" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#082f49" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+  <!-- Background Squircle -->
+  <rect width="512" height="512" rx="115" fill="url(#tasklyBg)"/>
+  <rect width="512" height="256" rx="115" fill="url(#tasklyGlow)"/>
+
+  <!-- Icona Clipboard & Checkmark Taskly -->
+  <g filter="url(#tasklyDrop)" transform="translate(256, 265)">
+    <!-- Cartellina / Foglio bianco principale -->
+    <rect x="-115" y="-95" width="230" height="240" rx="28" fill="#ffffff"/>
+
+    <!-- Clip metallica in alto -->
+    <rect x="-55" y="-120" width="110" height="38" rx="10" fill="#e2e8f0" stroke="#0284c7" stroke-width="4"/>
+    <rect x="-28" y="-138" width="56" height="25" rx="8" fill="none" stroke="#0284c7" stroke-width="8"/>
+
+    <!-- Righe del task sul foglio -->
+    <rect x="-70" y="-35" width="80" height="12" rx="6" fill="#cbd5e1"/>
+    <rect x="-70" y="-5" width="100" height="12" rx="6" fill="#cbd5e1"/>
+    <rect x="-70" y="25" width="60" height="12" rx="6" fill="#cbd5e1"/>
+
+    <!-- Badge Checkmark Verde 3D in basso a destra -->
+    <circle cx="55" cy="75" r="52" fill="url(#checkGrad)" stroke="#ffffff" stroke-width="8"/>
+    <!-- Spunta bianca -->
+    <path d="M35 75 L48 88 L75 58" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
