@@ -8,6 +8,42 @@ export const DEFAULT_ADMIN_CREDENTIALS = {
   password: process.env.ADMIN_PASSWORD || 'Admin123!',
 };
 
+/**
+ * Rileva in modo blindato se l'ambiente corrente è una demo (Vercel o branch demo).
+ * In produzione sui VPS (es. domini cliente o taskly.taaaac.eu), restituisce sempre false.
+ */
+export function isDemoEnvironment(host?: string | null): boolean {
+  if (process.env.IS_DEMO === 'true' || process.env.NEXT_PUBLIC_IS_DEMO === 'true') {
+    return true;
+  }
+  if (host) {
+    const h = host.toLowerCase();
+    if (
+      h.includes('vercel.app') ||
+      h.includes('cliente-demo') ||
+      h.includes('-demo') ||
+      h.startsWith('demo.')
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+export function verifyAdminPassword(input: string): boolean {
+  if (!input) return false;
+  const trimmed = input.trim();
+  const validSecrets = [
+    process.env.INITIAL_ADMIN_PASSWORD,
+    process.env.ADMIN_PASSWORD,
+    process.env.INITIAL_ADMIN_PIN,
+    process.env.ADMIN_PIN,
+    DEFAULT_ADMIN_CREDENTIALS.password,
+  ].filter(Boolean) as string[];
+
+  return validSecrets.some((s) => s.trim() === trimmed);
+}
+
 export interface SessionData {
   email: string;
   role: 'admin';
