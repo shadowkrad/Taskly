@@ -13,7 +13,13 @@
 - **Risoluzione Blocco Prima Pagina**: Risolto il problema per cui su smartphone e display mobile i pulsanti delle impostazioni occupavano il 100% della larghezza orizzontale nascondendo le altre sezioni e impedendo l'accesso alle schede successive (Reperibilità & Tariffe, Email, WhatsApp, Dispositivi, Aspetto).
 - **Nuovo Selettore Nativo Mobile**: Introdotto un menu a tendina rapido nativo su smartphone (< lg) ancorato stabilmente sotto l'header (sticky). Consente di selezionare ed esplorare istantaneamente qualsiasi sezione con 1 tap, sfruttando il picker nativo di iOS e Android. Su desktop la barra di navigazione verticale completa rimane intatta.
 
-### 3. 📲 Guida Rapida per il Cliente: Come Aggiornare l'Icona sul Tuo Smartphone
+### 3. 🔐 Autenticazione Master Qualificata & Accesso Rapido Passkey Biometrica
+- **Rimozione Completa Credenziali in Chiaro**: Eliminati tutti i testi e hint con credenziali di default o email/password di test esposti nell'interfaccia di login dei tenant reali.
+- **Supporto Password Master Semplificata**: Accesso gestionale rapido e sicuro con la password master impostata all'attivazione del tenant su Taaaac (con toggle visibilità password) ed email facoltativa.
+- **Accesso 1-Click su Ambiente Demo (Vercel)**: Nei canali di prova e demo pubblica, pulsante dedicato ad accesso immediato senza digitazione di credenziali.
+- **Sblocco Istantaneo con Passkey Biometrica**: Accesso in 1 secondo via impronta digitale, Face ID o PIN nativo del dispositivo (WebAuthn) per i dispositivi registrati in *Impostazioni > Dispositivi PWA*.
+
+### 4. 📲 Guida Rapida per il Cliente: Come Aggiornare l'Icona sul Tuo Smartphone
 > **⚠️ Nota Tecnica Importante sulla Cache dei Telefoni:**
 > I sistemi operativi mobili (Apple iOS e Android) memorizzano l'icona dell'applicazione nella cache locale permanente al momento del primo salvataggio sulla schermata Home. Pertanto, **le app già aggiunte in precedenza continueranno a mostrare la vecchia icona finché non vengono registrate nuovamente**.
 

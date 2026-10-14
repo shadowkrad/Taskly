@@ -7,6 +7,7 @@ import {
   verifySessionToken,
   SESSION_COOKIE_NAME,
   DEFAULT_ADMIN_CREDENTIALS,
+  verifyAdminPassword,
   type SessionData,
 } from '@/lib/auth';
 
@@ -16,33 +17,46 @@ export interface AuthResponse {
 }
 
 /**
- * Autenticazione con credenziali (Email + Password)
+ * Autenticazione con credenziali (Email + Password o solo Password Master)
  */
 export async function loginAction(
-  email: string,
-  password: string
+  emailOrPassword: string,
+  optionalPassword?: string
 ): Promise<AuthResponse> {
-  const cleanEmail = email.trim().toLowerCase();
   const targetEmail = (
     process.env.INITIAL_ADMIN_EMAIL ||
     process.env.ADMIN_EMAIL ||
     DEFAULT_ADMIN_CREDENTIALS.email
   ).toLowerCase();
-  const targetPassword =
-    process.env.INITIAL_ADMIN_PASSWORD ||
-    process.env.ADMIN_PASSWORD ||
-    process.env.INITIAL_ADMIN_PIN ||
-    process.env.ADMIN_PIN ||
-    DEFAULT_ADMIN_CREDENTIALS.password;
 
-  if (cleanEmail !== targetEmail || password !== targetPassword) {
+  let inputPassword = '';
+  let inputEmail = targetEmail;
+
+  if (optionalPassword !== undefined && optionalPassword !== '') {
+    inputEmail = emailOrPassword.trim().toLowerCase();
+    inputPassword = optionalPassword;
+  } else {
+    inputPassword = emailOrPassword;
+  }
+
+  // Se l'email è stata fornita esplicitamente, controllala solo se diversa da quella di sistema
+  if (optionalPassword !== undefined && optionalPassword !== '') {
+    if (inputEmail !== targetEmail && inputEmail !== DEFAULT_ADMIN_CREDENTIALS.email.toLowerCase()) {
+      return {
+        success: false,
+        message: 'Email o password non corretti.',
+      };
+    }
+  }
+
+  if (!verifyAdminPassword(inputPassword)) {
     return {
       success: false,
-      message: 'Email o password non corretti.',
+      message: 'Password o credenziali non corrette.',
     };
   }
 
-  const token = await createSessionToken(cleanEmail);
+  const token = await createSessionToken(inputEmail);
   const cookieStore = await cookies();
 
   cookieStore.set(SESSION_COOKIE_NAME, token, {
@@ -56,6 +70,37 @@ export async function loginAction(
   return {
     success: true,
   };
+}
+
+/**
+ * Accesso rapido 1-Click per ambienti Demo (Vercel)
+ */
+export async function loginDemoAction(): Promise<AuthResponse> {
+  try {
+    const targetEmail = (
+      process.env.INITIAL_ADMIN_EMAIL ||
+      process.env.ADMIN_EMAIL ||
+      DEFAULT_ADMIN_CREDENTIALS.email
+    ).toLowerCase();
+
+    const token = await createSessionToken(targetEmail);
+    const cookieStore = await cookies();
+
+    cookieStore.set(SESSION_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 7 * 24 * 60 * 60, // 7 giorni
+    });
+
+    return { success: true };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err?.message || "Errore durante l'accesso demo",
+    };
+  }
 }
 
 /**

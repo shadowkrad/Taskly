@@ -1,11 +1,24 @@
 'use client';
 
-import React, { useState, useTransition, use } from 'react';
+import React, { useState, useEffect, useTransition, use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Wrench, Lock, Mail, ArrowLeft, Loader2, AlertCircle, Sparkles, Key, Fingerprint, Smartphone } from 'lucide-react';
+import {
+  Wrench,
+  Lock,
+  Mail,
+  ArrowLeft,
+  Loader2,
+  AlertCircle,
+  Sparkles,
+  Key,
+  Fingerprint,
+  Eye,
+  EyeOff,
+  ArrowRight,
+} from 'lucide-react';
 import { startAuthentication } from '@simplewebauthn/browser';
-import { loginAction } from '@/app/actions/auth';
+import { loginAction, loginDemoAction } from '@/app/actions/auth';
 
 interface LoginPageProps {
   searchParams?: Promise<{ callbackUrl?: string }>;
@@ -17,10 +30,42 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
   const callbackUrl = params?.callbackUrl || '/admin';
 
   const [isPending, startTransition] = useTransition();
+  const [demoLoading, setDemoLoading] = useState(false);
   const [biometricLoading, setBiometricLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDemo, setIsDemo] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hn = window.location.hostname.toLowerCase();
+      const isDemoDomain =
+        hn.includes('vercel.app') ||
+        hn.includes('cliente-demo') ||
+        hn.includes('-demo') ||
+        hn.startsWith('demo.');
+      setIsDemo(isDemoDomain);
+    }
+  }, []);
+
+  const handleDemoLogin = async () => {
+    setDemoLoading(true);
+    setError(null);
+    try {
+      const res = await loginDemoAction();
+      if (res.success) {
+        router.push(callbackUrl);
+        router.refresh();
+      } else {
+        throw new Error(res.message || "Errore durante l'accesso demo");
+      }
+    } catch (err: any) {
+      setError(err.message || 'Errore accesso demo');
+      setDemoLoading(false);
+    }
+  };
 
   const handleDeviceLogin = async () => {
     setError(null);
@@ -32,7 +77,7 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
 
       if (!optRes.ok) {
         const err = await optRes.json();
-        throw new Error(err.error || 'Nessun dispositivo autorizzato.');
+        throw new Error(err.error || 'Nessun dispositivo autorizzato su questo browser. Accedi prima con password.');
       }
 
       const options = await optRes.json();
@@ -56,7 +101,11 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
       router.refresh();
     } catch (err: any) {
       console.warn('[handleDeviceLogin] errore:', err);
-      setError(err.message || 'Accesso con dispositivo non riuscito.');
+      if (err.name === 'NotAllowedError') {
+        setError('Sblocco biometrico annullato.');
+      } else {
+        setError(err.message || 'Dispositivo non registrato o non riconosciuto. Inserisci la password.');
+      }
     } finally {
       setBiometricLoading(false);
     }
@@ -64,10 +113,14 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!password.trim()) {
+      setError('Inserisci la password di accesso.');
+      return;
+    }
     setError(null);
 
     startTransition(async () => {
-      const res = await loginAction(email, password);
+      const res = await loginAction(email ? email : password, email ? password : '');
       if (res.success) {
         router.push(callbackUrl);
         router.refresh();
@@ -75,12 +128,6 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
         setError(res.message || 'Credenziali non valide.');
       }
     });
-  };
-
-  const fillDemoCredentials = () => {
-    setEmail('admin@taskly.it');
-    setPassword('Admin123!');
-    setError(null);
   };
 
   return (
@@ -92,47 +139,39 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
             <Wrench className="w-6 h-6" />
           </div>
           <h1 className="text-2xl font-black tracking-tight text-slate-900">Taskly Pro</h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Accesso Area Riservata Artigiani & Tecnici
+          <p className="text-xs sm:text-sm text-slate-500 mt-1 flex items-center justify-center gap-1">
+            <Lock className="w-3.5 h-3.5 text-slate-400" />
+            <span>Area Riservata Artigiani & Tecnici</span>
           </p>
         </div>
 
-        {/* Demo Credentials Box */}
-        {process.env.NEXT_PUBLIC_IS_DEMO !== 'false' && (
-          <div className="mb-5 p-3.5 rounded-xl bg-indigo-50/70 border border-indigo-200/80 text-xs text-indigo-900">
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-bold flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                Credenziali Demo Predefinite:
-              </span>
-              <button
-                type="button"
-                onClick={fillDemoCredentials}
-                className="text-[11px] font-bold text-indigo-700 hover:text-indigo-900 underline cursor-pointer"
-              >
-                Compila rapido
-              </button>
+        {/* 1-Click Demo Box (Solo su ambienti demo Vercel) */}
+        {isDemo && (
+          <div className="mb-6 p-4 rounded-2xl bg-indigo-50/80 border border-indigo-200/90 text-center space-y-2">
+            <div className="flex items-center justify-center gap-1.5 text-xs font-bold text-indigo-950">
+              <Sparkles className="w-4 h-4 text-indigo-600" />
+              <span>Modalità Demo Attiva</span>
             </div>
-            <div className="font-mono text-[11px] space-y-0.5 mt-1 text-indigo-800">
-              <div>Email: <strong>admin@taskly.it</strong></div>
-              <div>Password: <strong>Admin123!</strong></div>
-            </div>
+            <p className="text-[11px] text-indigo-700">
+              Esplora la gestione interventi, preventivi e cantieri con un singolo click, senza credenziali.
+            </p>
+            <button
+              type="button"
+              onClick={handleDemoLogin}
+              disabled={isPending || demoLoading}
+              className="w-full py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white font-bold text-xs rounded-xl shadow-xs transition flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
+            >
+              {demoLoading ? 'Accesso in corso...' : '👉 Accedi alla Demo (1-Click)'}
+            </button>
           </div>
         )}
 
-        {error && (
-          <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* Accesso Rapido Biometrico PWA v1.0.2 */}
-        <div className="mb-5">
+        {/* Accesso Rapido Biometrico Passkey */}
+        <div className="mb-6 space-y-2">
           <button
             type="button"
             onClick={handleDeviceLogin}
-            disabled={biometricLoading || isPending}
+            disabled={biometricLoading || isPending || demoLoading}
             className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs sm:text-sm shadow-xs flex items-center justify-center gap-2.5 transition-all cursor-pointer disabled:opacity-60 border border-slate-800 active:scale-98"
           >
             {biometricLoading ? (
@@ -143,33 +182,42 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
             ) : (
               <>
                 <Fingerprint className="w-4 h-4 text-emerald-400" />
-                <span>Accedi con FaceID / Impronta / PIN</span>
+                <span>Sblocco con FaceID / Impronta / PIN</span>
               </>
             )}
           </button>
+          <p className="text-[11px] text-slate-400 text-center font-medium">
+            Dispositivo registrato • Face ID • Touch ID • PIN
+          </p>
           <div className="relative my-4">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-slate-200" />
             </div>
-            <div className="relative flex justify-center text-[11px] uppercase tracking-wider">
-              <span className="bg-white px-2 text-slate-400 font-semibold">oppure con credenziali</span>
+            <div className="relative flex justify-center text-[10px] uppercase tracking-wider">
+              <span className="bg-white px-2 text-slate-400 font-bold">oppure con password</span>
             </div>
           </div>
         </div>
 
-        {/* Form Login */}
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Form Login Master Password */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
               <Mail className="w-3.5 h-3.5 text-slate-400" />
-              Email
+              Email (Opzionale)
             </label>
             <input
-              required
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@taskly.it"
+              placeholder="admin@tuodominio.it (se configurata)"
               className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
             />
           </div>
@@ -177,22 +225,31 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
           <div>
             <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-1.5 flex items-center gap-1.5">
               <Lock className="w-3.5 h-3.5 text-slate-400" />
-              Password
+              Password Gestionale
             </label>
-            <input
-              required
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
-            />
+            <div className="relative">
+              <input
+                required
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Inserisci password master"
+                className="w-full pl-3.5 pr-10 py-2.5 rounded-xl border border-slate-200 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 cursor-pointer"
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
 
           <button
             type="submit"
-            disabled={isPending}
-            className="btn-taaaac w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xs hover:shadow-md disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+            disabled={isPending || demoLoading || biometricLoading}
+            className="btn-taaaac w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-xs hover:shadow-md disabled:opacity-50 flex items-center justify-center gap-2 mt-2 cursor-pointer active:scale-98"
           >
             {isPending ? (
               <>
@@ -201,22 +258,26 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
               </>
             ) : (
               <>
-                <Key className="w-4 h-4" />
-                Accedi al Gestionale
+                <span>Accedi al Gestionale</span>
+                <ArrowRight className="w-4 h-4" />
               </>
             )}
           </button>
         </form>
 
-        {/* Back Link */}
-        <div className="mt-6 pt-4 border-t border-slate-100 text-center">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" />
-            Torna alla vetrina pubblica
-          </Link>
+        <div className="mt-6 pt-4 border-t border-slate-100 text-center space-y-3">
+          <p className="text-[11px] text-slate-400">
+            Per abilitare lo sblocco rapido con FaceID o PIN su questo telefono, effettua l'accesso e registra il dispositivo in <strong className="text-slate-600">Impostazioni &gt; Dispositivi PWA</strong>.
+          </p>
+          <div>
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-800 transition-colors"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              Torna alla vetrina pubblica
+            </Link>
+          </div>
         </div>
       </div>
     </div>
