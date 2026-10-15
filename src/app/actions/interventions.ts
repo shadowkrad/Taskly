@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { prisma, ensureDatabaseSchema } from '@/lib/prisma';
 import { sendNotificationMail } from '@/lib/taaaac-mailer';
+import { triggerGoogleReviewBooster } from '@/lib/omnichannel-client';
 import {
   serviceRequestSchema,
   workReportSchema,
@@ -110,7 +111,7 @@ export async function updateServiceRequestStatus(
     await ensureDatabaseSchema();
     const data = validated.data;
 
-    await prisma.serviceRequest.update({
+    const updated = await prisma.serviceRequest.update({
       where: { id: data.id },
       data: {
         status: data.status,
@@ -120,6 +121,14 @@ export async function updateServiceRequestStatus(
         notes: data.notes !== undefined ? data.notes : undefined,
       },
     });
+
+    if (data.status === 'COMPLETATO' && updated.email) {
+      triggerGoogleReviewBooster({
+        clientEmail: updated.email,
+        clientName: updated.customerName,
+        serviceName: updated.serviceType,
+      }).catch((err) => console.error('[Taskly ReviewBooster Trigger Error]:', err));
+    }
 
     revalidatePath('/admin');
     return {
@@ -169,13 +178,21 @@ export async function createWorkReport(
     });
 
     // Aggiorna lo stato dell'intervento a COMPLETATO e registra il costo finale
-    await prisma.serviceRequest.update({
+    const updatedReq = await prisma.serviceRequest.update({
       where: { id: data.serviceRequestId },
       data: {
         status: 'COMPLETATO',
         finalCost: data.totalAmount,
       },
     });
+
+    if (updatedReq.email) {
+      triggerGoogleReviewBooster({
+        clientEmail: updatedReq.email,
+        clientName: updatedReq.customerName,
+        serviceName: updatedReq.serviceType,
+      }).catch((err) => console.error('[Taskly ReviewBooster WorkReport Trigger Error]:', err));
+    }
 
     revalidatePath('/admin');
     return {

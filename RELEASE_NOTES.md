@@ -7,6 +7,17 @@
 - **Pulsante WhatsApp 1-Click su Ticket & Interventi**: Nella dashboard operativa interventi, aggiunto il pulsante verde `WhatsApp` accanto al tasto di chiamata rapida. Con 1 click compone il messaggio con i dettagli dell'intervento (titolo, orario programmato e azienda) aprendo la chat istantaneamente a costo 0 €.
 - **Client Standardizzato (`@/lib/whatsapp-client` & `@/lib/whatsapp-server`)**: Connessione al micro-servizio centralizzato di Taaaac Core per le notifiche cloud.
 
+### 2. 🌐 Hub Sincronizzazione Omnicanale (Google Maps, Meta Facebook & IG, WhatsApp Business)
+- **Aggiornamento Orari Operativi & Reperibilità H24 All'Unisono con 1 Click**: Dalla scheda *Dashboard > Impostazioni > Reperibilità & Tariffe*, il pulsante `🚀 Salva e Sincronizza Reperibilità su Google & Canali` aggiorna simultaneamente la scheda Google Business Profile (Maps & Ricerca), le Pagine Meta (Facebook & Instagram) e il profilo WhatsApp Business della ditta.
+- **Badge di Stato Canali in Tempo Reale**: Nuova scheda visiva nella gestione reperibilità con indicatori live dello stato di connessione e sincronizzazione per Google Maps, Meta, WhatsApp Business e Google Review Booster.
+- **Architettura Centralizzata Taaaac Core**: Gestione centralizzata e sicura di tutti i token di accesso e delle API dei canali esterni tramite Taaaac Core.
+
+### 3. ⭐ Google Review Booster Automatico via Email (5 Stelle Intelligenti)
+- **Email Post-Intervento Automatica a Costo Zero**: Quando un intervento tecnico viene segnato come `COMPLETATO` o viene emesso il rapportino digitale di lavoro, il sistema invia in automatico un'email con 5 stelle interattive da `noreply@taaaac.eu` senza consumare la quota messaggi WhatsApp.
+- **Routing Intelligente Reputazione**:
+  - **4 e 5 Stelle (Lavoro Impeccabile)**: Reindirizzano il cliente direttamente alla scheda Google Maps per pubblicare la recensione a 5 stelle verificata.
+  - **1, 2 e 3 Stelle (Customer Care)**: Reindirizzano al modulo di feedback privato interno (`/feedback`) permettendo alla ditta di ricontattare il cliente e risolvere ogni dubbio tempestivamente.
+
 ---
 
 ## Novità della Versione 1.0.5 (Hotfix / Patch)
