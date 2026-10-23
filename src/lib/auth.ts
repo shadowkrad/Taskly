@@ -276,3 +276,5 @@ export async function clearMaintenanceSession(): Promise<void> {
 
 export { SESSION_COOKIE_NAME };
 
+
+export const verifyAdminPasswordOrPin = verifyAdminPassword;
