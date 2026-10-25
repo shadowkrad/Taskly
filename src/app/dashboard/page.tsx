@@ -1,13 +1,18 @@
 import React from "react";
 import { getServiceRequests } from "@/lib/interventions";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import BannerPreavvisoFestivita from "@/components/dashboard/BannerPreavvisoFestivita";
+import { getProssimeFestivitaTaskly } from "@/lib/festivita-italiane";
 import { Wrench, Shield, Plus } from "lucide-react";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const interventions = await getServiceRequests();
+  const [interventions, prossimeFestivita] = await Promise.all([
+    getServiceRequests(),
+    getProssimeFestivitaTaskly(7),
+  ]);
 
   // Serializzazione date per Client Component
   const safeInterventions = interventions.map((item) => ({
@@ -24,6 +29,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {/* Banner Preavviso Festività a 7 Giorni */}
+      <BannerPreavvisoFestivita festivita={prossimeFestivita} />
+
       {/* Header Panoramica */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>

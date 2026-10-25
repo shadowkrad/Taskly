@@ -148,6 +148,29 @@ export async function ensureDatabaseSchema() {
       if (!exists) {
         await prisma.$executeRawUnsafe(`ALTER TABLE "TenantLocalCache" ADD COLUMN "showcaseConfig" TEXT DEFAULT '{}';`);
       }
+      const rispettaCol = Array.isArray(info) && info.some((col) => col.name.toLowerCase() === "rispettafestivitanazionali");
+      if (!rispettaCol) {
+        await prisma.$executeRawUnsafe(`ALTER TABLE "TenantLocalCache" ADD COLUMN "rispettaFestivitaNazionali" BOOLEAN DEFAULT 1;`);
+      }
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "EccezioneCalendario" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "data" TEXT NOT NULL,
+          "titolo" TEXT NOT NULL,
+          "tipo" TEXT NOT NULL DEFAULT 'CHIUSURA',
+          "isAperto" BOOLEAN NOT NULL DEFAULT 0,
+          "orarioApertura" TEXT,
+          "orarioChiusura" TEXT,
+          "pausaInizio" TEXT,
+          "pausaFine" TEXT,
+          "note" TEXT,
+          "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE UNIQUE INDEX IF NOT EXISTS "EccezioneCalendario_data_key" ON "EccezioneCalendario"("data");
+      `);
     } catch {}
 
     globalForPrisma.schemaInitialized = true;
