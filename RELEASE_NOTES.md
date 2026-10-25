@@ -20,6 +20,11 @@
 - **Blocco Temporaneo Automatico**: Protezione attiva contro tentativi di indovinare la password; dopo 5 tentativi consecutivi errati dall'IP o sull'account, l'accesso viene sospeso per 15 minuti con timer di sblocco in tempo reale.
 - **Honey-Pot Silenzioso**: Campo esca invisibile nel modulo di login che respinge all'istante bot automatizzati prima dell'elaborazione.
 
+### 5. 🎄 Calendario Festività Nazionali, Reperibilità Straordinaria & Preavviso a 7 Giorni
+- **Motore Festività Nazionali Italiane con Calcolo Pasqua**: Riconoscimento automatico delle 12 festività ufficiali italiane (Natale, Capodanno, Epifania, Pasqua, Lunedì dell'Angelo, 25 Aprile, 1 Maggio, 2 Giugno, Ferragosto, Tutti i Santi, Immacolata, Santo Stefano) tramite algoritmo astronomico di Meeus/Jones/Butcher.
+- **Nuovo Pannello "Orari & Festività" in Dashboard**: Gestione unificata degli orari della squadra tecnica (interventi ordinari, reperibilità sabato/domenica) e delle date speciali (chiusure per ferie estive o turni straordinari di pronto intervento festivo a tariffa maggiorata).
+- **Banner Intelligente di Preavviso (7 Giorni di Anticipo)**: Notifica proattiva nella panoramica interventi della dashboard con 7 giorni di anticipo sull'arrivo di ogni festività, per pianificare tempestivamente i turni dei tecnici e confermare lo stato del servizio.
+
 ---
 
 ## Novità della Versione 1.0.5 (Hotfix Produzione)
