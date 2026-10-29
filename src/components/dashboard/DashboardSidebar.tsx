@@ -18,7 +18,6 @@ import {
   UserCheck,
   Settings,
   Clock,
-  Shield,
   Gift,
   Award,
   Share2,
@@ -26,7 +25,6 @@ import {
   ExternalLink,
   ChevronRight,
 } from "lucide-react";
-import UserSecurityModal from "@/components/UserSecurityModal";
 import SidebarPwaInstall from "@/components/dashboard/SidebarPwaInstall";
 
 const baseNavLinks = [
@@ -74,7 +72,6 @@ const addonNavLinks = [
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [securityModalOpen, setSecurityModalOpen] = useState(false);
   const { isAddonActive, config } = useTenantConfig();
 
   const activeAddons = addonNavLinks.filter((item) => isAddonActive(item.addonId));
@@ -238,22 +235,6 @@ export default function DashboardSidebar() {
               <Settings className="w-4 h-4 shrink-0" />
               <span>Impostazioni & Orari</span>
             </Link>
-            <button
-              type="button"
-              onClick={() => {
-                setSecurityModalOpen(true);
-                setMobileOpen(false);
-              }}
-              className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition-all cursor-pointer mt-1"
-            >
-              <div className="flex items-center gap-3">
-                <Shield className="w-4 h-4 shrink-0 text-indigo-400" />
-                <span>Sicurezza & 2FA</span>
-              </div>
-              <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
-                1.0.6
-              </span>
-            </button>
           </div>
         </nav>
 
