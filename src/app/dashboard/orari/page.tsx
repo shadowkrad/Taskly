@@ -1,5 +1,7 @@
 "use client";
 
+import OmnichannelSyncCard from "@/components/dashboard/OmnichannelSyncCard";
+
 import { useState, useEffect } from "react";
 import {
   Clock,
@@ -220,6 +222,14 @@ export default function TasklyOrariPage() {
             Configura le finestre di assistenza della squadra tecnica, la reperibilità per emergenze e le festività ufficiali italiane.
           </p>
         </div>
+
+        {/* Omnichannel Sync Hub v1.1.0 */}
+      <div className="mt-4 mb-4">
+        <OmnichannelSyncCard
+          eccezioni={typeof eccezioni !== "undefined" ? eccezioni : []}
+          accentColor="emerald"
+        />
+      </div>
 
         {/* Tab Switcher */}
         <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl self-start sm:self-auto border border-slate-200">

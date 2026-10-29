@@ -1,3 +1,4 @@
+import FloatingWhatsAppWidget from "@/components/public/FloatingWhatsAppWidget";
 import type { Metadata } from 'next';
 import './globals.css';
 import { fetchTenantConfig } from '@/lib/taaaac';
@@ -52,6 +53,7 @@ export default async function RootLayout({
             <Navbar />
             <main className="flex-1 w-full">
               {children}
+      <FloatingWhatsAppWidget />
             </main>
           </div>
         </TenantProvider>
