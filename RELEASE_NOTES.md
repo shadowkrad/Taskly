@@ -1,28 +1,35 @@
-# 🚀 Taskly — Release Notes
+﻿# 🚀 Taskly — Release Notes
 
 ## Novità della Versione 1.1.0 (In Sviluppo)
 
 ### 1. 💬 Integrazione WhatsApp a 360° (Smart Link Gratuito & Connessione Taaaac Hub)
-- **Floating WhatsApp Widget sulla Vetrina Ditta / Assistenza**: Aggiunto il pulsante galleggiante WhatsApp ufficiale in basso a destra su tutte le pagine pubbliche (`FloatingWhatsAppWidget`), per consentire a privati e aziende di richiedere pronto intervento o preventivi via chat.
-- **Perfezionamento Grafico Bollino WhatsApp Ufficiale**: integrato il tracciato vettoriale ufficiale Meta WhatsApp (fumetto solido bianco puro `#FFFFFF` ad alta definizione con cornetta verde `#25D366` in risalto), eliminando il vecchio bordo vuoto wireframe e garantendo la massima nitidezza visiva su tutti i dispositivi.
-- **Pulsante WhatsApp 1-Click su Ticket & Interventi**: Nella dashboard operativa interventi, aggiunto il pulsante verde `WhatsApp` accanto al tasto di chiamata rapida. Con 1 click compone il messaggio con i dettagli dell'intervento (titolo, orario programmato e azienda) aprendo la chat istantaneamente a costo 0 €.
-- **Client Standardizzato (`@/lib/whatsapp-client` & `@/lib/whatsapp-server`)**: Connessione al micro-servizio centralizzato di Taaaac Core per le notifiche cloud.
+- **Floating WhatsApp Widget sulla Vetrina Ditta / Assistenza**: Aggiunto il pulsante galleggiante WhatsApp ufficiale in basso a destra su tutte le pagine pubbliche (FloatingWhatsAppWidget), per consentire a privati e aziende di richiedere pronto intervento o preventivi via chat.
+- **Perfezionamento Grafico Bollino WhatsApp Ufficiale**: integrato il tracciato vettoriale ufficiale Meta WhatsApp (fumetto solido bianco puro #FFFFFF ad alta definizione con cornetta verde #25D366 in risalto), eliminando il vecchio bordo vuoto wireframe e garantendo la massima nitidezza visiva su tutti i dispositivi.
+- **Pulsante WhatsApp 1-Click su Ticket & Interventi**: Nella dashboard operativa interventi, aggiunto il pulsante verde WhatsApp accanto al tasto di chiamata rapida. Con 1 click compone il messaggio con i dettagli dell'intervento (titolo, orario programmato e azienda) aprendo la chat istantaneamente a costo 0 €.
+- **Client Standardizzato (@/lib/whatsapp-client & @/lib/whatsapp-server)**: Connessione al micro-servizio centralizzato di Taaaac Core per le notifiche cloud.
 
 ### 2. 🌐 Hub Sincronizzazione Omnicanale (Google Maps, Meta Facebook & IG, WhatsApp Business)
-- **Aggiornamento Orari Operativi & Reperibilità H24 All'Unisono con 1 Click**: Dalla scheda *Dashboard > Impostazioni > Reperibilità & Tariffe*, il pulsante `🚀 Salva e Sincronizza Reperibilità su Google & Canali` aggiorna simultaneamente la scheda Google Business Profile (Maps & Ricerca), le Pagine Meta (Facebook & Instagram) e il profilo WhatsApp Business della ditta.
+- **Aggiornamento Orari Operativi & Reperibilità H24 All'Unisono con 1 Click**: Dalla scheda *Dashboard > Impostazioni > Reperibilità & Tariffe*, il pulsante 🚀 Salva e Sincronizza Reperibilità su Google & Canali aggiorna simultaneamente la scheda Google Business Profile (Maps & Ricerca), le Pagine Meta (Facebook & Instagram) e il profilo WhatsApp Business della ditta.
 - **Badge di Stato Canali in Tempo Reale**: Nuova scheda visiva nella gestione reperibilità con indicatori live dello stato di connessione e sincronizzazione per Google Maps, Meta, WhatsApp Business e Google Review Booster.
 - **Architettura Centralizzata Taaaac Core**: Gestione centralizzata e sicura di tutti i token di accesso e delle API dei canali esterni tramite Taaaac Core.
 
 ### 3. ⭐ Google Review Booster Automatico via Email (5 Stelle Intelligenti)
-- **Email Post-Intervento Automatica a Costo Zero**: Quando un intervento tecnico viene segnato come `COMPLETATO` o viene emesso il rapportino digitale di lavoro, il sistema invia in automatico un'email con 5 stelle interattive da `noreply@taaaac.eu` senza consumare la quota messaggi WhatsApp.
+- **Email Post-Intervento Automatica a Costo Zero**: Quando un intervento tecnico viene segnato come COMPLETATO o viene emesso il rapportino digitale di lavoro, il sistema invia in automatico un'email con 5 stelle interattive da 
+oreply@taaaac.eu senza consumare la quota messaggi WhatsApp.
 - **Routing Intelligente Reputazione**:
   - **4 e 5 Stelle (Lavoro Impeccabile)**: Reindirizzano il cliente direttamente alla scheda Google Maps per pubblicare la recensione a 5 stelle verificata.
-  - **1, 2 e 3 Stelle (Customer Care)**: Reindirizzano al modulo di feedback privato interno (`/feedback`) permettendo alla ditta di ricontattare il cliente e risolvere ogni dubbio tempestivamente.
+  - **1, 2 e 3 Stelle (Customer Care)**: Reindirizzano al modulo di feedback privato interno (/feedback) permettendo alla ditta di ricontattare il cliente e risolvere ogni dubbio tempestivamente.
 
 ---
 
----
+## Novità della Versione 1.0.7 (Hotfix / Patch)
 
+### 1. 🔐 Autenticazione Distinta: Email + Password Titolare & PIN Staff Cantiere
+- **Accesso Titolare Diretto con Email e Password**: Il titolare dell'impresa/studio accede inserendo l'indirizzo email e la password ricevuti al momento della registrazione o aggiornati nel proprio account Taaaac, eliminando la richiesta confusa del solo PIN/Password generica.
+- **PIN Tastierino Touch Dedicato ai Collaboratori**: Il tastierino numerico PIN rapido è ora dedicato esclusivamente ai tecnici e collaboratori operativi per sbloccare rapidamente i tablet e le postazioni in cantiere o in mobilità.
+- **Centralizzazione Sicurezza e MFA su Taaaac Core**: Le impostazioni avanzate di sicurezza (2FA TOTP, codici di recupero, cambio password) sono centralizzate al 100% nella dashboard utente di Taaaac (taaaac.eu/portal), semplificando l'esperienza all'interno del modulo satellite.
+
+---
 ## Novità della Versione 1.0.6 (Patch di Sicurezza e Hardening Accessi)
 
 ### 1. 🛡️ Autenticazione a Due Fattori (2FA / MFA Volontaria con Codici di Emergenza)
