@@ -116,6 +116,12 @@ model TenantLocalCache {
   contactEmail String?
   phone        String?
   showcaseConfig String? @default("{}")
+  telegramEnabled     Boolean   @default(false)
+  telegramBotToken    String?
+  telegramBotUsername String?
+  telegramStaffChatId String?
+  fidelityEnabled     Boolean   @default(false)
+  fidelityRules       String?   @default("{}")
   mfaEnabled          Boolean   @default(false)
   mfaSecret           String?
   mfaBackupCodes      String?   // JSON array di codici crittografati

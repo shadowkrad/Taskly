@@ -28,9 +28,12 @@ import {
 import EmailSettingsCard from "@/components/dashboard/EmailSettingsCard";
 import RegisteredDevicesCard from "@/components/dashboard/RegisteredDevicesCard";
 import ShowcaseVisualStudio from "@/components/dashboard/showcase/ShowcaseVisualStudio";
+import TelegramSettingsPanel, { TelegramSettingsData } from "@/components/dashboard/TelegramSettingsPanel";
+import FidelitySettingsPanel, { FidelitySettingsData } from "@/components/dashboard/FidelitySettingsPanel";
+import { Send, Award } from "lucide-react";
 import { useTenantConfig } from "@/components/providers/TenantConfigProvider";
 
-type SettingsTab = "attivita" | "reperibilita" | "email" | "whatsapp" | "dispositivi" | "aspetto";
+type SettingsTab = "attivita" | "reperibilita" | "email" | "whatsapp" | "telegram" | "fidelity" | "dispositivi" | "aspetto";
 
 interface TabItem {
   id: SettingsTab;
@@ -75,6 +78,22 @@ const TABS: TabItem[] = [
     description: "Notifiche automatiche WhatsApp su apertura guasti e arrivo tecnico",
   },
   {
+    id: "telegram",
+    label: "Telegram Hub & Tecnici",
+    shortLabel: "Telegram",
+    iconComponent: Send,
+    shortDescription: "Bot ed avvisi tecnici",
+    description: "Notifiche guasti e ticket urgenti su gruppo Telegram della squadra e One-Tap Connect",
+  },
+  {
+    id: "fidelity",
+    label: "Fidelity & Punti",
+    shortLabel: "Fidelity",
+    iconComponent: Award,
+    shortDescription: "Raccolta punti e premi",
+    description: "Fidelizzazione clienti privati e condomini con numero di telefono e catalogo premi",
+  },
+  {
     id: "dispositivi",
     label: "Dispositivi PWA",
     shortLabel: "Dispositivi",
@@ -97,6 +116,21 @@ export default function TasklyImpostazioniPage() {
   const [activeTab, setActiveTab] = useState<SettingsTab>("attivita");
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  // Telegram & Fidelity State
+  const [telegramSettings, setTelegramSettings] = useState<TelegramSettingsData>({
+    enabled: false,
+    botToken: "",
+    botUsername: "",
+    staffChatId: "",
+  });
+
+  const [fidelitySettings, setFidelitySettings] = useState<FidelitySettingsData>({
+    enabled: false,
+    pointsPerEuro: 1,
+    welcomeBonusPoints: 15,
+    minPointsToRedeem: 50,
+    rewards: [],
+  });
 
   // Form State
   const [form, setForm] = useState({
@@ -204,6 +238,8 @@ export default function TasklyImpostazioniPage() {
             emailUfficio: data.emailUfficio || f.emailUfficio,
             telefonoUrgenze: data.telefonoUrgenze || f.telefonoUrgenze,
           }));
+          if (data.telegramSettings) setTelegramSettings(data.telegramSettings);
+          if (data.fidelitySettings) setFidelitySettings(data.fidelitySettings);
         }
       })
       .catch((err) => console.error("Errore caricamento impostazioni:", err));
@@ -277,6 +313,8 @@ export default function TasklyImpostazioniPage() {
           coloreAccento: form.coloreAccento,
           emailUfficio: form.emailUfficio,
           telefonoUrgenze: form.telefonoUrgenze,
+          telegramSettings,
+          fidelitySettings,
         }),
       });
 
