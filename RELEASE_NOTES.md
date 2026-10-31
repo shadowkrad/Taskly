@@ -1,5 +1,14 @@
 ﻿# 🚀 Taskly — Release Notes
 
+## Novità della Versione 1.0.8 (Hotfix / Patch)
+
+### 1. 🔧 Vetrina Impianti 100% Personalizzabile & Live Studio Completo
+- **Pannello Orari & Sede nello Studio Vetrina**: Gestione completa di claim aziendale, testo garanzia RC, orari reperibilità, turni H24, sede operativa e recapiti telefonici/email.
+- **Footer Dinamico (`PublicFooter.tsx`)**: Sostituiti tutti i testi statici; la vetrina pubblica rispecchia ora fedelmente le informazioni configurate dall'azienda.
+- **Anteprima Live Studio Aggiornata**: Preview in tempo reale di tutte le modifiche apportate alla scheda dell'attività.
+
+---
+
 ## Novità della Versione 1.0.7 (Hotfix / Patch)
 
 ### 1. 🔐 Autenticazione Distinta: Email + Password Titolare & PIN Staff Cantiere

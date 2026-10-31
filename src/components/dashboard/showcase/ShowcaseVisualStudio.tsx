@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   ShowcaseConfig,
   DEFAULT_TASKLY_SHOWCASE_CONFIG,
+  DEFAULT_TASKLY_CONTACT_INFO,
   GalleryPhotoItem,
 } from "@/lib/showcase-defaults";
 import {
@@ -36,7 +37,7 @@ import {
   Zap,
 } from "lucide-react";
 
-type ControlTab = "hero" | "media" | "colori" | "chisiamo" | "sezioni" | "badges";
+type ControlTab = "hero" | "media" | "colori" | "chisiamo" | "contatti" | "sezioni" | "badges";
 
 export default function ShowcaseVisualStudio() {
   const [config, setConfig] = useState<ShowcaseConfig>(DEFAULT_TASKLY_SHOWCASE_CONFIG);

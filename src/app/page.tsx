@@ -137,7 +137,7 @@ export default async function HomePage() {
       </section>
 
       {/* 6. Footer con orari e contatti */}
-      <PublicFooter />
+      <PublicFooter showcase={showcase} />
     </div>
   );
 }
