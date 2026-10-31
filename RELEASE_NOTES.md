@@ -20,6 +20,14 @@ oreply@taaaac.eu senza consumare la quota messaggi WhatsApp.
   - **4 e 5 Stelle (Lavoro Impeccabile)**: Reindirizzano il cliente direttamente alla scheda Google Maps per pubblicare la recensione a 5 stelle verificata.
   - **1, 2 e 3 Stelle (Customer Care)**: Reindirizzano al modulo di feedback privato interno (/feedback) permettendo alla ditta di ricontattare il cliente e risolvere ogni dubbio tempestivamente.
 
+## Novità della Versione 1.0.8 (Hotfix / Patch)
+
+### 1. 🔧 Vetrina Impianti 100% Personalizzabile & Live Studio Completo
+- **Pannello Orari & Sede nello Studio Vetrina**: Gestione completa di claim aziendale, testo garanzia RC, orari reperibilità, turni H24, sede operativa e recapiti telefonici/email.
+- **Footer Dinamico (`PublicFooter.tsx`)**: Sostituiti tutti i testi statici; la vetrina pubblica rispecchia ora fedelmente le informazioni configurate dall'azienda.
+- **Anteprima Live Studio Aggiornata**: Preview in tempo reale di tutte le modifiche apportate alla scheda dell'attività.
+
+
 ---
 
 ## Novità della Versione 1.0.7 (Hotfix / Patch)

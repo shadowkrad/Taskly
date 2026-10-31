@@ -10,6 +10,19 @@ export interface GalleryPhotoItem {
   caption?: string;
 }
 
+export interface ShowcaseContactInfo {
+  address?: string;
+  addressNote?: string;
+  phone?: string;
+  email?: string;
+  hoursWeekday?: string;
+  hoursWeekend?: string;
+  hoursNote?: string;
+  responseNote?: string;
+  brandClaim?: string;
+  guaranteeText?: string;
+}
+
 export interface ShowcaseConfig {
   brandName: string;
   primaryColor: string;
@@ -61,6 +74,9 @@ export interface ShowcaseConfig {
     showContact: boolean;
   };
 
+  // Informazioni di Contatto & Orari
+  contactInfo?: ShowcaseContactInfo;
+
   // Etichette Personalizzate
   customLabels: {
     servicesTitle: string;
@@ -69,6 +85,19 @@ export interface ShowcaseConfig {
     contactTitle: string;
   };
 }
+
+export const DEFAULT_TASKLY_CONTACT_INFO: ShowcaseContactInfo = {
+  address: "Sede Operativa Territoriale",
+  addressNote: "Disponibilità interventi tempestivi in tutta la provincia.",
+  phone: "+39 340 1234567",
+  email: "assistenza@taskly-impianti.it",
+  hoursWeekday: "Lun - Ven: 07:30 - 19:30",
+  hoursWeekend: "Sabato: 08:00 - 18:00",
+  hoursNote: "Pronto Intervento H24 • Interventi tempestivi in loco",
+  responseNote: "Reperibilità 24/7 per emergenze e guasti bloccanti.",
+  brandClaim: "Servizio di pronto intervento specializzato per abitazioni, condomini e aziende. Tecnici qualificati con rilascio di dichiarazione di conformità e rapportino digitale.",
+  guaranteeText: "Assicurazione RC Professionale e garanzia certificata sui ricambi.",
+};
 
 export const DEFAULT_TASKLY_SHOWCASE_CONFIG: ShowcaseConfig = {
   brandName: "Taskly Impianti & Pronto Intervento",
@@ -186,6 +215,10 @@ export function parseShowcaseConfig(raw: string | null | undefined): ShowcaseCon
       sections: {
         ...DEFAULT_TASKLY_SHOWCASE_CONFIG.sections,
         ...(parsed.sections || {}),
+      },
+      contactInfo: {
+        ...DEFAULT_TASKLY_CONTACT_INFO,
+        ...(parsed.contactInfo || {}),
       },
       customLabels: {
         ...DEFAULT_TASKLY_SHOWCASE_CONFIG.customLabels,
