@@ -20,7 +20,12 @@ export default function AddonModuleGuard({
   description = "Questo modulo estende le funzionalità per la tua attività sul territorio.",
   icon = "⚡",
 }: AddonModuleGuardProps) {
-  const { config } = useTenantConfig();
+  const { isAddonActive, config } = useTenantConfig();
+  const active = isAddonActive(addonId);
+
+  if (active && children) {
+    return <>{children}</>;
+  }
 
   return (
     <div className="max-w-3xl mx-auto py-12 px-4">
