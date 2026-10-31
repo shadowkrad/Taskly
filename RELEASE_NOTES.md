@@ -27,6 +27,8 @@ oreply@taaaac.eu senza consumare la quota messaggi WhatsApp.
 - **Footer Dinamico (`PublicFooter.tsx`)**: Sostituiti tutti i testi statici; la vetrina pubblica rispecchia ora fedelmente le informazioni configurate dall'azienda.
 - **Anteprima Live Studio Aggiornata**: Preview in tempo reale di tutte le modifiche apportate alla scheda dell'attività.
 
+### 2. 🎨 Pulizia Estetica Navbar: Rimozione Badge Invasivi
+- **Intestazione Minimale & Logo Protagonista**: Rimosso il micro-badge fisso "PRO" accanto al nome dell'attività sia nella barra di navigazione pubblica sia nella pagina di accesso, rendendo l'identità dell'azienda pulita, sobria e senza sovrapposizioni grafiche.
 
 ---
 

@@ -97,7 +97,7 @@ export function Navbar() {
               <Wrench className="w-4 h-4" />
             </div>
             <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">
-              {config.theme.brandName || 'Taskly'} <span className="text-indigo-600">PRO</span>
+              {config.theme.brandName || 'Taskly'}
             </span>
           </Link>
 
@@ -137,9 +137,7 @@ export function Navbar() {
                 <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg truncate block">
                   {config.theme.brandName || 'Taskly'}
                 </span>
-                <span className="inline-flex text-[10px] uppercase font-extrabold tracking-wider px-1.5 sm:px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/70 shrink-0">
-                  PRO
-                </span>
+
               </div>
               <p className="text-[11px] text-slate-400 font-medium truncate block">
                 Pronto Intervento &amp; Assistenza Tecnica
