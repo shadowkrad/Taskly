@@ -943,30 +943,14 @@ export default function ShowcaseVisualStudio() {
             {/* TAB 4: CHI SIAMO / SQUADRA */}
             {activeControlTab === "chisiamo" && (
               <div className="space-y-4">
-                <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                      <Type className="w-4 h-4 text-indigo-600" />
-                      <span>Chi Siamo & Squadra Tecnica</span>
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Fai conoscere la storia aziendale, l&apos;esperienza e le abilitazioni dei tuoi tecnici.
-                    </p>
-                  </div>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <span className="text-xs font-bold text-slate-600">Abilitata</span>
-                    <input
-                      type="checkbox"
-                      checked={config.about.enabled}
-                      onChange={(e) =>
-                        setConfig((prev) => ({
-                          ...prev,
-                          about: { ...prev.about, enabled: e.target.checked },
-                        }))
-                      }
-                      className="accent-indigo-600 w-4 h-4 rounded cursor-pointer"
-                    />
-                  </label>
+                <div className="border-b border-slate-100 pb-3">
+                  <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <Type className="w-4 h-4 text-indigo-600" />
+                    <span>Chi Siamo & Squadra Tecnica</span>
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Fai conoscere la storia aziendale, l&apos;esperienza e le abilitazioni dei tuoi tecnici.
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1382,7 +1366,7 @@ export default function ShowcaseVisualStudio() {
                 )}
 
                 {/* Chi Siamo / Squadra */}
-                {config.sections.showAbout && config.about?.enabled && (
+                {config.sections.showAbout && (
                   <div className="p-4 bg-white border-b border-slate-100 space-y-2.5">
                     <div className="text-center">
                       <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider block">

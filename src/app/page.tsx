@@ -37,7 +37,7 @@ export default async function HomePage() {
       )}
 
       {/* 2. Chi Siamo & Squadra Tecnica */}
-      {showcase.sections.showAbout && showcase.about?.enabled && (
+      {showcase.sections.showAbout && (
         <section id="chisiamo" className="py-20 px-4 bg-white border-b border-slate-200">
           <div className="max-w-4xl mx-auto text-center space-y-6">
             <span className="text-xs font-bold text-indigo-600 uppercase tracking-widest block">
