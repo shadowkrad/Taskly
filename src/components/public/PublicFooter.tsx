@@ -18,9 +18,9 @@ export function PublicFooter({ showcase }: PublicFooterProps) {
   return (
     <footer className="bg-slate-900 text-slate-400 py-12 text-sm border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className={`grid grid-cols-1 ${showcase?.sections?.showHours !== false ? "md:grid-cols-4" : "md:grid-cols-3"} gap-8 mb-8`}>
           {/* Col 1 */}
-          <div className="md:col-span-2">
+          <div className={showcase?.sections?.showHours !== false ? "md:col-span-2" : "md:col-span-2"}>
             <div className="flex items-center gap-2 mb-3 text-white font-bold text-lg">
               <span>{brandName}</span>
             </div>
@@ -33,21 +33,23 @@ export function PublicFooter({ showcase }: PublicFooterProps) {
             </div>
           </div>
 
-          {/* Col 2 */}
-          <div>
-            <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-indigo-400" />
-              <span>{showcase?.customLabels?.hoursTitle || "Reperibilità"}</span>
-            </h4>
-            <ul className="space-y-2 text-xs">
-              <li>{contactInfo.hoursWeekday || "Lun - Ven: 07:30 - 19:30"}</li>
-              <li>{contactInfo.hoursWeekend || "Sabato: 08:00 - 18:00"}</li>
-              <li className="text-emerald-400 font-semibold">{contactInfo.hoursNote || "Pronto Intervento H24"}</li>
-              {contactInfo.responseNote && (
-                <li className="text-slate-500 text-[11px]">{contactInfo.responseNote}</li>
-              )}
-            </ul>
-          </div>
+          {/* Col 2: Orari di Presenza & Reperibilità (Condizionale da showcase.sections.showHours) */}
+          {showcase?.sections?.showHours !== false && (
+            <div>
+              <h4 className="text-white font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-indigo-400" />
+                <span>{showcase?.customLabels?.hoursTitle || "Reperibilità & Orari"}</span>
+              </h4>
+              <ul className="space-y-2 text-xs">
+                <li>{contactInfo.hoursWeekday || "Lun - Ven: 07:30 - 19:30"}</li>
+                <li>{contactInfo.hoursWeekend || "Sabato: 08:00 - 18:00"}</li>
+                <li className="text-emerald-400 font-semibold">{contactInfo.hoursNote || "Pronto Intervento H24"}</li>
+                {contactInfo.responseNote && (
+                  <li className="text-slate-500 text-[11px]">{contactInfo.responseNote}</li>
+                )}
+              </ul>
+            </div>
+          )}
 
           {/* Col 3 */}
           <div>
