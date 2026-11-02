@@ -1,5 +1,17 @@
 ﻿# 🚀 Taskly — Release Notes
 
+## Novità della Versione 1.0.9 (Hotfix / Patch)
+
+### 1. ✈️ Promemoria Interventi & Aggiornamenti Gratuiti su Telegram
+- **Invito 1-Tocco a Fine Richiesta**: Al completamento della richiesta di intervento tecnico, il cliente può attivare con un semplice tocco le notifiche e i promemoria automatici tramite Telegram.
+- **Zero Costi & Zero Spam**: Il cliente riceve aggiornamenti e promemoria dell'intervento senza costi per l'attività, in modo comodo e sicuro.
+
+### 2. ⏰ Sincronizzazione Notifiche 24 Ore Prima con Taaaac Core
+- **Canale Unificato con la Console Centrale**: Predisposto il canale protetto per permettere al motore centrale di Taaaac di recapitare i promemoria degli interventi all'orario preferito scelto dall'attività (es. ogni mattina alle 09:00).
+- **Trasparenza Totale**: Pieno supporto ai promemoria via Email, Telegram e WhatsApp (con account dell'attività).
+
+---
+
 ## Novità della Versione 1.0.8 (Hotfix / Patch)
 
 ### 1. 🔧 Vetrina Impianti 100% Personalizzabile & Live Studio Completo
