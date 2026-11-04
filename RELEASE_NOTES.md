@@ -1,6 +1,6 @@
 ﻿# 🚀 Taskly — Release Notes
 
-## Novità della Versione 1.1.0 (In Sviluppo)
+## Novità della Versione 1.1.0
 
 ### 1. 💬 Integrazione WhatsApp a 360° (Smart Link Gratuito & Connessione Taaaac Hub)
 - **Floating WhatsApp Widget sulla Vetrina Ditta / Assistenza**: Aggiunto il pulsante galleggiante WhatsApp ufficiale in basso a destra su tutte le pagine pubbliche (FloatingWhatsAppWidget), per consentire a privati e aziende di richiedere pronto intervento o preventivi via chat.
@@ -115,7 +115,7 @@ oreply@taaaac.eu senza consumare la quota messaggi WhatsApp.
 
 ---
 
-## Novità della Versione 1.1.0 (In Sviluppo)
+## Novità della Versione 1.1.0
 
 ### 1. 💬 Integrazione WhatsApp a 360° (Smart Link Gratuito & Connessione Taaaac Hub)
 - **Floating WhatsApp Widget sulla Vetrina Ditta / Assistenza**: Aggiunto il pulsante galleggiante WhatsApp ufficiale in basso a destra su tutte le pagine pubbliche (`FloatingWhatsAppWidget`), per consentire a privati e aziende di richiedere pronto intervento o preventivi via chat.
