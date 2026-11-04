@@ -1,5 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { fetchTenantConfig } from "@/lib/taaaac-client";
+
+/**
+ * Telegram è gestito da Taaaac Core: qui si legge solo lo stato (mai token né chat ID).
+ */
+async function getTelegramHub() {
+  try {
+    const cfg = await fetchTenantConfig();
+    return {
+      managedByCore: true,
+      enabled: Boolean(cfg.telegramEnabled),
+      botUsername: cfg.telegramBotUsername || "",
+      staffAlerts: cfg.telegramAutoConfirm !== false,
+      reminder24h: cfg.telegramAutoReminder24h !== false,
+    };
+  } catch {
+    return { managedByCore: true, enabled: false, botUsername: "", staffAlerts: true, reminder24h: true };
+  }
+}
 
 export async function GET() {
   try {
@@ -25,12 +44,7 @@ export async function GET() {
         coloreAccento: config.accentColor,
         emailUfficio: config.email || "",
         telefonoUrgenze: config.phone || "",
-        telegramSettings: {
-          enabled: Boolean(config.telegramEnabled),
-          botToken: config.telegramBotToken || "",
-          botUsername: config.telegramBotUsername || "",
-          staffChatId: config.telegramStaffChatId || "",
-        },
+        telegramHub: await getTelegramHub(),
         fidelitySettings: {
           enabled: Boolean(config.fidelityEnabled),
           pointsPerEuro: fidelityRules?.pointsPerEuro || 1,
@@ -53,12 +67,7 @@ export async function GET() {
       coloreAccento: "#4f46e5",
       emailUfficio: "assistenza@tasklyimpianti.it",
       telefonoUrgenze: "+39 340 1234567",
-      telegramSettings: {
-        enabled: false,
-        botToken: "",
-        botUsername: "",
-        staffChatId: "",
-      },
+      telegramHub: await getTelegramHub(),
       fidelitySettings: {
         enabled: false,
         pointsPerEuro: 1,
@@ -76,7 +85,7 @@ export async function GET() {
 export async function PUT(req: NextRequest) {
   try {
     const body = await req.json();
-    const { nomeAttivita, logoUrl, faviconUrl, colorePrimario, coloreAccento, emailUfficio, telefonoUrgenze, telegramSettings, fidelitySettings } = body;
+    const { nomeAttivita, logoUrl, faviconUrl, colorePrimario, coloreAccento, emailUfficio, telefonoUrgenze, fidelitySettings } = body;
 
     const updated = await prisma.tenantLocalCache.upsert({
       where: { id: "singleton" },
@@ -88,10 +97,6 @@ export async function PUT(req: NextRequest) {
         ...(coloreAccento !== undefined && { accentColor: String(coloreAccento) }),
         ...(emailUfficio !== undefined && { email: String(emailUfficio) }),
         ...(telefonoUrgenze !== undefined && { phone: String(telefonoUrgenze) }),
-        ...(telegramSettings?.enabled !== undefined && { telegramEnabled: Boolean(telegramSettings.enabled) }),
-        ...(telegramSettings?.botToken !== undefined && { telegramBotToken: telegramSettings.botToken }),
-        ...(telegramSettings?.botUsername !== undefined && { telegramBotUsername: telegramSettings.botUsername }),
-        ...(telegramSettings?.staffChatId !== undefined && { telegramStaffChatId: telegramSettings.staffChatId }),
         ...(fidelitySettings?.enabled !== undefined && { fidelityEnabled: Boolean(fidelitySettings.enabled) }),
         ...(fidelitySettings !== undefined && { fidelityRules: JSON.stringify(fidelitySettings) }),
       },
@@ -104,10 +109,6 @@ export async function PUT(req: NextRequest) {
         accentColor: coloreAccento || "#4f46e5",
         email: emailUfficio || "",
         phone: telefonoUrgenze || "",
-        telegramEnabled: Boolean(telegramSettings?.enabled),
-        telegramBotToken: telegramSettings?.botToken || null,
-        telegramBotUsername: telegramSettings?.botUsername || null,
-        telegramStaffChatId: telegramSettings?.staffChatId || null,
         fidelityEnabled: Boolean(fidelitySettings?.enabled),
         fidelityRules: fidelitySettings ? JSON.stringify(fidelitySettings) : "{}",
       },
