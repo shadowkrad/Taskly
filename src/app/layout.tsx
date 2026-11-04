@@ -5,6 +5,8 @@ import { fetchTenantConfig } from '@/lib/taaaac';
 import { TenantProvider } from '@/components/tenant-provider';
 import { Navbar } from '@/components/navbar';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
   const config = await fetchTenantConfig();
   const brand = config.theme.brandName || "Assistenza Tecnica & Interventi";
@@ -43,6 +45,12 @@ export default async function RootLayout({
 }) {
   const tenantConfig = await fetchTenantConfig();
 
+  const hasWhatsAppModule =
+    Array.isArray(tenantConfig.addons) &&
+    tenantConfig.addons.some((m) => String(m).toUpperCase().includes("WHATSAPP"));
+
+  const waPhone = tenantConfig.contact?.phone || "+39 340 1234567";
+
   return (
     <html lang="it">
       <head>
@@ -56,7 +64,12 @@ export default async function RootLayout({
             <Navbar />
             <main className="flex-1 w-full">
               {children}
-      <FloatingWhatsAppWidget />
+              {hasWhatsAppModule && (
+                <FloatingWhatsAppWidget
+                  phone={waPhone}
+                  brandName={tenantConfig.theme.brandName || "Taskly"}
+                />
+              )}
             </main>
           </div>
         </TenantProvider>
