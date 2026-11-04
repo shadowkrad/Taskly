@@ -139,12 +139,6 @@ export default async function HomePage() {
 
       {/* 6. Footer con orari e contatti */}
       <PublicFooter showcase={showcase} />
-
-      {/* Widget Flottante WhatsApp Vetrina */}
-      <FloatingWhatsAppWidget
-        phone={phone}
-        brandName={cache?.brandName || "Taskly"}
-      />
     </div>
   );
 }
