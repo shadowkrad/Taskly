@@ -19,6 +19,7 @@ export default function AddonModuleGuard({
   title,
   description = "Questo modulo estende le funzionalità per la tua attività sul territorio.",
   icon = "⚡",
+  children,
 }: AddonModuleGuardProps) {
   const { isAddonActive, config } = useTenantConfig();
   const active = isAddonActive(addonId);
