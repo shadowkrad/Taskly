@@ -550,7 +550,15 @@ export default function TasklyImpostazioniPage() {
             <input
               type="checkbox"
               checked={form.whatsappAbilitato}
-              onChange={(e) => setForm({ ...form, whatsappAbilitato: e.target.checked })}
+              onChange={(e) => {
+                const nextVal = e.target.checked;
+                setForm({ ...form, whatsappAbilitato: nextVal });
+                fetch("/api/impostazioni", {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ whatsappAbilitato: nextVal }),
+                }).catch(() => {});
+              }}
               className="w-5 h-5 accent-indigo-600 rounded cursor-pointer"
             />
           </div>
@@ -561,6 +569,48 @@ export default function TasklyImpostazioniPage() {
               Gentile &#123;&#123;nome_cliente&#125;&#125;, la richiesta di pronto intervento #&#123;&#123;id_ticket&#125;&#125; è stata assegnata al tecnico &#123;&#123;nome_tecnico&#125;&#125;. Orario stimato di arrivo: &#123;&#123;orario_stimato&#125;&#125;. Per dettagli: &#123;&#123;link_ticket&#125;&#125;
             </div>
           </div>
+        </div>
+      )}
+
+      {/* TAB: TELEGRAM HUB & STAFF */}
+      {activeTab === "telegram" && (
+        <div className="space-y-4">
+          <TelegramSettingsPanel
+            data={telegramSettings}
+            onChange={(updated) => {
+              const toggled = updated.enabled !== telegramSettings.enabled;
+              setTelegramSettings(updated);
+              if (toggled) {
+                fetch("/api/impostazioni", {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ telegramSettings: updated }),
+                }).catch(() => {});
+              }
+            }}
+          />
+        </div>
+      )}
+
+      {/* TAB: FIDELITY & PUNTI */}
+      {activeTab === "fidelity" && (
+        <div className="space-y-4">
+          <FidelitySettingsPanel
+            data={fidelitySettings}
+            onChange={(updated) => {
+              const toggled =
+                updated.enabled !== fidelitySettings.enabled ||
+                (updated.rewards?.length || 0) !== (fidelitySettings.rewards?.length || 0);
+              setFidelitySettings(updated);
+              if (toggled) {
+                fetch("/api/impostazioni", {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ fidelitySettings: updated }),
+                }).catch(() => {});
+              }
+            }}
+          />
         </div>
       )}
 
