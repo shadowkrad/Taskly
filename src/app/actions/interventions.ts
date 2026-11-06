@@ -1,4 +1,6 @@
 'use server';
+import { registraCliente } from '@/lib/clienti-telefono';
+import { gestisciPuntiIntervento } from '@/lib/fidelity';
 
 import { revalidatePath } from 'next/cache';
 import { prisma, ensureDatabaseSchema } from '@/lib/prisma';
@@ -52,6 +54,14 @@ export async function createServiceRequest(
         status: 'IN_ATTESA',
       },
     });
+
+    // Un numero, un cliente: la scheda si crea o si aggiorna dal telefono. I punti arrivano a lavoro completato.
+    await registraCliente({
+      nome: data.customerName,
+      telefono: data.phone,
+      email: data.email || null,
+      indirizzo: data.address,
+    }).catch((err) => console.warn('[Taskly CRM] Errore aggiornamento scheda cliente:', err));
 
     if (data.email) {
       sendNotificationMail({
@@ -111,6 +121,7 @@ export async function updateServiceRequestStatus(
     await ensureDatabaseSchema();
     const data = validated.data;
 
+    const precedente = await prisma.serviceRequest.findUnique({ where: { id: data.id }, select: { status: true } });
     const updated = await prisma.serviceRequest.update({
       where: { id: data.id },
       data: {
@@ -121,6 +132,17 @@ export async function updateServiceRequestStatus(
         notes: data.notes !== undefined ? data.notes : undefined,
       },
     });
+
+    // Fidelity: punti sul costo dell'intervento quando e' completato (e storno se viene riaperto)
+    if (precedente && precedente.status !== data.status) {
+      await gestisciPuntiIntervento({
+        rif: updated.id,
+        telefono: updated.phone,
+        importo: updated.finalCost ?? updated.estimatedCost ?? 0,
+        eraCompletato: precedente.status === 'COMPLETATO',
+        oraCompletato: data.status === 'COMPLETATO',
+      });
+    }
 
     if (data.status === 'COMPLETATO' && updated.email) {
       triggerGoogleReviewBooster({
@@ -178,12 +200,22 @@ export async function createWorkReport(
     });
 
     // Aggiorna lo stato dell'intervento a COMPLETATO e registra il costo finale
+    const precedenteReq = await prisma.serviceRequest.findUnique({ where: { id: data.serviceRequestId }, select: { status: true } });
     const updatedReq = await prisma.serviceRequest.update({
       where: { id: data.serviceRequestId },
       data: {
         status: 'COMPLETATO',
         finalCost: data.totalAmount,
       },
+    });
+
+    // Fidelity: punti sul totale del rapportino (una sola volta per intervento)
+    await gestisciPuntiIntervento({
+      rif: updatedReq.id,
+      telefono: updatedReq.phone,
+      importo: data.totalAmount,
+      eraCompletato: precedenteReq?.status === 'COMPLETATO',
+      oraCompletato: true,
     });
 
     if (updatedReq.email) {

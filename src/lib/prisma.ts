@@ -1,9 +1,29 @@
 import { PrismaClient } from '@prisma/client';
+import { normalizePhone } from "@/lib/phone";
 import fs from 'fs';
 import path from 'path';
 
 // Risoluzione dinamica del path database SQLite per Vercel, Docker Taaaac VPS o locale
 function resolveDatabaseUrl(): string {
+  // 0. Demo (ramo cliente-demo, Vercel): se c'e' prisma/demo.db con clienti, punti e buoni di prova la si copia in
+  // una zona scrivibile e si usa quella. Senza demo.db o fuori da Vercel non cambia nulla.
+  if (process.env.VERCEL) {
+    const demoPath = path.join(process.cwd(), 'prisma', 'demo.db');
+    if (fs.existsSync(demoPath)) {
+      const tmpDemo = '/tmp/taskly-demo.db';
+      try {
+        const copiare =
+          !fs.existsSync(tmpDemo) ||
+          fs.statSync(demoPath).mtimeMs > fs.statSync(tmpDemo).mtimeMs ||
+          fs.statSync(demoPath).size !== fs.statSync(tmpDemo).size;
+        if (copiare) fs.copyFileSync(demoPath, tmpDemo);
+        return `file:${tmpDemo}`;
+      } catch (e) {
+        console.warn('[Prisma Vercel] Copia database demo in /tmp:', e);
+      }
+    }
+  }
+
   if (process.env.DATABASE_URL && process.env.DATABASE_URL.trim() !== '') {
     return process.env.DATABASE_URL;
   }
@@ -172,6 +192,110 @@ export async function ensureDatabaseSchema() {
         CREATE UNIQUE INDEX IF NOT EXISTS "EccezioneCalendario_data_key" ON "EccezioneCalendario"("data");
       `);
     } catch {}
+
+    // Fidelity, buoni e clienti (1.1.2)
+    try {
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "Customer" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "name" TEXT NOT NULL,
+          "phone" TEXT NOT NULL,
+          "email" TEXT,
+          "address" TEXT,
+          "notes" TEXT,
+          "birthDate" DATETIME,
+          "marketingConsent" BOOLEAN NOT NULL DEFAULT 0,
+          "loyaltyPoints" INTEGER NOT NULL DEFAULT 0,
+          "loyaltyToken" TEXT,
+          "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "MovimentoPunti" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "clienteId" TEXT NOT NULL,
+          "punti" INTEGER NOT NULL,
+          "tipo" TEXT NOT NULL DEFAULT 'ACCREDITO',
+          "origine" TEXT,
+          "descrizione" TEXT,
+          "importo" REAL,
+          "appuntamentoId" TEXT,
+          "premioId" TEXT,
+          "saldoDopo" INTEGER,
+          "operatore" TEXT,
+          "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          CONSTRAINT "MovimentoPunti_clienteId_fkey" FOREIGN KEY ("clienteId") REFERENCES "Customer" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "GiftCard" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "codice" TEXT NOT NULL,
+          "importoIniziale" REAL NOT NULL,
+          "saldoResiduo" REAL NOT NULL,
+          "acquirenteNome" TEXT NOT NULL,
+          "acquirenteEmail" TEXT,
+          "acquirenteTelefono" TEXT,
+          "beneficiarioNome" TEXT NOT NULL,
+          "beneficiarioMessaggio" TEXT,
+          "dataScadenza" DATETIME,
+          "stato" TEXT NOT NULL DEFAULT 'ATTIVA',
+          "motivo" TEXT NOT NULL DEFAULT 'REGALO',
+          "tipoValore" TEXT NOT NULL DEFAULT 'IMPORTO',
+          "percentuale" REAL,
+          "descrizioneServizio" TEXT,
+          "clienteId" TEXT,
+          "spesaMinima" REAL,
+          "usoParziale" BOOLEAN NOT NULL DEFAULT 1,
+          "note" TEXT,
+          "tokenPubblico" TEXT,
+          "creatoDa" TEXT,
+          "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "MovimentoGiftCard" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "giftCardId" TEXT NOT NULL,
+          "importo" REAL NOT NULL,
+          "tipo" TEXT,
+          "saldoDopo" REAL,
+          "operatore" TEXT,
+          "note" TEXT,
+          "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          CONSTRAINT "MovimentoGiftCard_giftCardId_fkey" FOREIGN KEY ("giftCardId") REFERENCES "GiftCard" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+        );
+      `);
+      for (const sql of [
+        `CREATE UNIQUE INDEX IF NOT EXISTS "Customer_loyaltyToken_key" ON "Customer"("loyaltyToken")`,
+        `CREATE INDEX IF NOT EXISTS "Customer_phone_idx" ON "Customer"("phone")`,
+        `CREATE INDEX IF NOT EXISTS "MovimentoPunti_clienteId_idx" ON "MovimentoPunti"("clienteId")`,
+        `CREATE INDEX IF NOT EXISTS "MovimentoPunti_appuntamentoId_idx" ON "MovimentoPunti"("appuntamentoId")`,
+        `CREATE UNIQUE INDEX IF NOT EXISTS "GiftCard_codice_key" ON "GiftCard"("codice")`,
+        `CREATE UNIQUE INDEX IF NOT EXISTS "GiftCard_tokenPubblico_key" ON "GiftCard"("tokenPubblico")`,
+        `CREATE INDEX IF NOT EXISTS "GiftCard_stato_idx" ON "GiftCard"("stato")`,
+        `CREATE INDEX IF NOT EXISTS "GiftCard_clienteId_idx" ON "GiftCard"("clienteId")`,
+        `CREATE INDEX IF NOT EXISTS "MovimentoGiftCard_giftCardId_idx" ON "MovimentoGiftCard"("giftCardId")`,
+      ]) {
+        await prisma.$executeRawUnsafe(sql).catch(() => {});
+      }
+
+      // I clienti nascono dagli interventi: la prima volta si crea una scheda per ogni numero di telefono gia' presente
+      if ((await prisma.customer.count()) === 0) {
+        const richieste = await prisma.serviceRequest.findMany({ orderBy: { createdAt: "asc" } });
+        const visti = new Set<string>();
+        for (const r of richieste) {
+          const n = normalizePhone(r.phone);
+          if (!n || n.length < 6 || visti.has(n)) continue;
+          visti.add(n);
+          await prisma.customer.create({ data: { name: r.customerName, phone: n, email: r.email, address: r.address } });
+        }
+      }
+    } catch (err) {
+      console.warn('[ensureDatabaseSchema] Fidelity/buoni:', err);
+    }
 
     globalForPrisma.schemaInitialized = true;
   } catch (error) {

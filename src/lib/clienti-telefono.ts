@@ -1,0 +1,50 @@
+import { prisma } from "@/lib/prisma";
+import { normalizePhone } from "@/lib/phone";
+
+export interface ClienteTrovato {
+  id: string;
+  name: string;
+  phone: string;
+}
+
+/**
+ * Cerca un cliente con lo stesso numero, qualunque sia il formato in cui e' stato salvato
+ * (es. "+39 333 1122334", "333-1122334", "3331122334", "0039 333 1122334").
+ * Si confrontano solo le cifre, senza spazi, trattini, punti, parentesi e "+".
+ */
+export async function cercaClientePerTelefono(raw: string, escludiId?: string): Promise<ClienteTrovato | null> {
+  const n = normalizePhone(raw);
+  if (!n || n.length < 6) return null;
+  const varianti = [n, `39${n}`, `0039${n}`];
+  const segnaposto = varianti.map(() => "?").join(",");
+  const righe = (await prisma.$queryRawUnsafe(
+    `SELECT "id", "name", "phone" FROM "Customer"
+     WHERE "phone" != 'CANCELLATO'
+       AND replace(replace(replace(replace(replace(replace("phone", ' ', ''), '-', ''), '.', ''), '(', ''), ')', ''), '+', '') IN (${segnaposto})
+       ${escludiId ? 'AND "id" != ?' : ""}
+     LIMIT 1`,
+    ...varianti,
+    ...(escludiId ? [escludiId] : [])
+  )) as ClienteTrovato[];
+  return righe[0] ?? null;
+}
+
+/**
+ * Trova il cliente con lo stesso numero (in qualunque formato) oppure lo crea, salvando il telefono normalizzato.
+ * Usato quando arriva una richiesta di intervento: i punti NON si danno qui, arrivano a lavoro completato.
+ */
+export async function registraCliente(opz: { nome: string; telefono: string; email?: string | null; indirizzo?: string | null }): Promise<void> {
+  const telefono = opz.telefono.trim();
+  if (normalizePhone(telefono).length < 6) return;
+  const trovato = await cercaClientePerTelefono(telefono);
+  if (trovato) {
+    await prisma.customer.update({
+      where: { id: trovato.id },
+      data: { ...(opz.email ? { email: opz.email } : {}), ...(opz.indirizzo ? { address: opz.indirizzo } : {}) },
+    });
+    return;
+  }
+  await prisma.customer.create({
+    data: { name: opz.nome, phone: normalizePhone(telefono), email: opz.email || null, address: opz.indirizzo || null },
+  });
+}

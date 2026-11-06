@@ -1,6 +1,35 @@
 ﻿# 🚀 Taskly — Release Notes
 
-## Novità della Versione 1.1.0 (In Sviluppo)
+## Novità della Versione 1.1.2 (Patch)
+
+### 1. 👤 Anagrafica Clienti Vera
+- **Un numero, un cliente**: nasce l'anagrafica clienti, una scheda per ogni numero di telefono (anche scritto con spazi, trattini o +39). Alla prima apertura si crea da sola dagli interventi già registrati; ogni nuova richiesta di intervento aggiorna o crea la scheda, senza doppioni.
+- **Scheda cliente** con data di nascita facoltativa, consenso promozionale, avviso per i telefoni fissi (non ricevono WhatsApp né messaggi), storico interventi, punti e buoni attivi. La finestra sta sempre nello schermo.
+
+### 2. 🎟️ Fedeltà a Punti Vera
+- **Punti sui lavori**: quando un intervento è completato (anche dal rapportino di lavoro) il cliente guadagna i punti del costo finale, una sola volta per intervento e con storno se viene riaperto.
+- **Cassa fedeltà**, premi scelti dal titolare e **tessera digitale** con logo e colori dell'azienda (link privato con QR), aggiungibile alla schermata Home del telefono con il logo come icona. Le pagine Fedeltà e Buoni non sono più schermate di esempio.
+
+### 3. 🎁 Buoni Completi, Invio e Stampa
+- **Un buono per ogni motivo**: regalo, sconto, compensazione, gesto commerciale, premio punti, compleanno, promozione; valore in euro, percentuale o intervento in omaggio; scadenza facoltativa, spesa minima, uso in più volte o unico.
+- **Cassa con anteprima**, annullo con motivo e movimenti registrati. **Email** (di default, dal servizio Taaaac), **WhatsApp a scelta dell'esercente** (mai in automatico, mai verso i fissi), pagina del buono con QR, **stampa A4 o ricevuta da 80 mm** e ristampa con lo stesso codice.
+
+### 4. 🎂 Compleanno e Premi che Diventano Buoni
+- **Buono compleanno automatico**, una volta per cliente e per anno, con email solo a chi ha dato il consenso. Parte quando si apre la pagina Buoni o da `/api/cron/compleanni`.
+- **Premio punti → buono**: riscattando un premio si scalano i punti e nasce un buono intestato al cliente, nella stessa operazione.
+
+---
+
+## Novità della Versione 1.1.1 (Patch)
+
+### 1. ✈️ Telegram Gestito da Taaaac Core (Hub Centralizzato)
+- **Un solo posto per configurare Telegram**: il pannello Telegram locale è sostituito da una scheda di sola lettura (stato, bot, avvisi attivi) con il link al portale Taaaac, da cui si attiva o disattiva il canale.
+- **Nessun token nel modulo**: token del bot e chat ID non vengono più inseriti né salvati nelle impostazioni del modulo, e il test non passa più dal browser.
+- **Stato letto dal Core**: la scheda legge `telegram*` da `/api/public/tenant-config` (mai token né chat ID).
+
+---
+
+## Novità della Versione 1.1.0
 
 ### 1. 💬 Integrazione WhatsApp a 360° (Smart Link Gratuito & Connessione Taaaac Hub)
 - **Floating WhatsApp Widget sulla Vetrina Ditta / Assistenza**: Aggiunto il pulsante galleggiante WhatsApp ufficiale in basso a destra su tutte le pagine pubbliche (FloatingWhatsAppWidget), per consentire a privati e aziende di richiedere pronto intervento o preventivi via chat.
@@ -19,6 +48,19 @@ oreply@taaaac.eu senza consumare la quota messaggi WhatsApp.
 - **Routing Intelligente Reputazione**:
   - **4 e 5 Stelle (Lavoro Impeccabile)**: Reindirizzano il cliente direttamente alla scheda Google Maps per pubblicare la recensione a 5 stelle verificata.
   - **1, 2 e 3 Stelle (Customer Care)**: Reindirizzano al modulo di feedback privato interno (/feedback) permettendo alla ditta di ricontattare il cliente e risolvere ogni dubbio tempestivamente.
+
+---
+
+## Novità della Versione 1.0.10 (Hotfix / Patch)
+
+### 1. 💬 Pallino WhatsApp Unificato (Attivazione da Taaaac Core)
+- **`FloatingWhatsAppWidget` allineato su tutta la flotta**: il pulsante galleggiante compare sulle pagine pubbliche solo se il modulo WhatsApp è attivo nella configurazione del tenant (`/api/public/tenant-config` di Taaaac Core).
+- **Nascosto nelle aree gestionali**: non appare in `/dashboard`, `/admin` e `/login`.
+- **Risposta del Core normalizzata**: lettura uniforme dei campi del tenant-config.
+
+### 2. ⚙️ Pannelli Telegram/Fidelity Visibili & Salvataggio Istantaneo dei Toggle
+- **Auto-save**: in `/dashboard/impostazioni` ogni interruttore salva subito nel database e aggiorna la vista, senza un secondo pulsante "Salva".
+- **Pannelli dedicati**: i pannelli Telegram Hub e Fidelity sono ora sempre raggiungibili dalle impostazioni.
 
 ---
 
@@ -112,27 +154,6 @@ oreply@taaaac.eu senza consumare la quota messaggi WhatsApp.
    - **Su iPhone (iOS / Safari)**: tocca l'icona di condivisione in basso al centro (il quadrato con la freccia verso l'alto ⬆️), scorri il menu verso il basso e tocca **"Aggiungi alla schermata Home"**, quindi conferma con **"Aggiungi"** in alto a destra.
    - **Su Android (Chrome)**: tocca il menu con i tre puntini in alto a destra (⋮), seleziona **"Aggiungi a schermata Home"** (o **"Installa applicazione"**), e conferma con **"Aggiungi"**.
 4. **Fatto!** L'icona sulla schermata Home del tuo smartphone sarà ora perfettamente nitida, con la grafica dedicata o con il logo del tuo brand.
-
----
-
-## Novità della Versione 1.1.0 (In Sviluppo)
-
-### 1. 💬 Integrazione WhatsApp a 360° (Smart Link Gratuito & Connessione Taaaac Hub)
-- **Floating WhatsApp Widget sulla Vetrina Ditta / Assistenza**: Aggiunto il pulsante galleggiante WhatsApp ufficiale in basso a destra su tutte le pagine pubbliche (`FloatingWhatsAppWidget`), per consentire a privati e aziende di richiedere pronto intervento o preventivi via chat.
-- **Perfezionamento Grafico Bollino WhatsApp Ufficiale**: integrato il tracciato vettoriale ufficiale Meta WhatsApp (fumetto solido bianco puro `#FFFFFF` ad alta definizione con cornetta verde `#25D366` in risalto), eliminando il vecchio bordo vuoto wireframe e garantendo la massima nitidezza visiva su tutti i dispositivi.
-- **Pulsante WhatsApp 1-Click su Ticket & Interventi**: Nella dashboard operativa interventi, aggiunto il pulsante verde `WhatsApp` accanto al tasto di chiamata rapida. Con 1 click compone il messaggio con i dettagli dell'intervento (titolo, orario programmato e azienda) aprendo la chat istantaneamente a costo 0 €.
-- **Client Standardizzato (`@/lib/whatsapp-client` & `@/lib/whatsapp-server`)**: Connessione al micro-servizio centralizzato di Taaaac Core per le notifiche cloud.
-
-### 2. 🌐 Hub Sincronizzazione Omnicanale (Google Maps, Meta Facebook & IG, WhatsApp Business)
-- **Aggiornamento Orari Operativi & Reperibilità H24 All'Unisono con 1 Click**: Dalla scheda *Dashboard > Impostazioni > Reperibilità & Tariffe*, il pulsante `🚀 Salva e Sincronizza Reperibilità su Google & Canali` aggiorna simultaneamente la scheda Google Business Profile (Maps & Ricerca), le Pagine Meta (Facebook & Instagram) e il profilo WhatsApp Business della ditta.
-- **Badge di Stato Canali in Tempo Reale**: Nuova scheda visiva nella gestione reperibilità con indicatori live dello stato di connessione e sincronizzazione per Google Maps, Meta, WhatsApp Business e Google Review Booster.
-- **Architettura Centralizzata Taaaac Core**: Gestione centralizzata e sicura di tutti i token di accesso e delle API dei canali esterni tramite Taaaac Core.
-
-### 3. ⭐ Google Review Booster Automatico via Email (5 Stelle Intelligenti)
-- **Email Post-Intervento Automatica a Costo Zero**: Quando un intervento tecnico viene segnato come `COMPLETATO` o viene emesso il rapportino digitale di lavoro, il sistema invia in automatico un'email con 5 stelle interattive da `noreply@taaaac.eu` senza consumare la quota messaggi WhatsApp.
-- **Routing Intelligente Reputazione**:
-  - **4 e 5 Stelle (Lavoro Impeccabile)**: Reindirizzano il cliente direttamente alla scheda Google Maps per pubblicare la recensione a 5 stelle verificata.
-  - **1, 2 e 3 Stelle (Customer Care)**: Reindirizzano al modulo di feedback privato interno (`/feedback`) permettendo alla ditta di ricontattare il cliente e risolvere ogni dubbio tempestivamente.
 
 ---
 

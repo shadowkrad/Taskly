@@ -2,6 +2,7 @@ import FloatingWhatsAppWidget from "@/components/public/FloatingWhatsAppWidget";
 import type { Metadata } from 'next';
 import './globals.css';
 import { fetchTenantConfig } from '@/lib/taaaac';
+import { headers } from 'next/headers';
 import { TenantProvider } from '@/components/tenant-provider';
 import { Navbar } from '@/components/navbar';
 
@@ -51,12 +52,19 @@ export default async function RootLayout({
 
   const waPhone = tenantConfig.contact?.phone || "+39 340 1234567";
 
+  // La tessera del cliente ha icona (logo) e manifest propri, impostati dalla sua pagina
+  const eTessera = ((await headers()).get('x-pathname') || '').startsWith('/tessera/');
+
   return (
     <html lang="it">
       <head>
-        <link rel="icon" href="/api/pwa-icon?size=192" sizes="any" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/api/pwa-icon?size=180" />
-        <link rel="manifest" href="/manifest.webmanifest" />
+        {!eTessera && (
+          <>
+            <link rel="icon" href="/api/pwa-icon?size=192" sizes="any" />
+            <link rel="apple-touch-icon" sizes="180x180" href="/api/pwa-icon?size=180" />
+            <link rel="manifest" href="/manifest.webmanifest" />
+          </>
+        )}
       </head>
       <body className="min-h-screen bg-slate-50 text-slate-900 antialiased selection:bg-indigo-500 selection:text-white">
         <TenantProvider config={tenantConfig}>

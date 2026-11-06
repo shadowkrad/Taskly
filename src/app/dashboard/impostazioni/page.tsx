@@ -28,7 +28,7 @@ import {
 import EmailSettingsCard from "@/components/dashboard/EmailSettingsCard";
 import RegisteredDevicesCard from "@/components/dashboard/RegisteredDevicesCard";
 import ShowcaseVisualStudio from "@/components/dashboard/showcase/ShowcaseVisualStudio";
-import TelegramSettingsPanel, { TelegramSettingsData } from "@/components/dashboard/TelegramSettingsPanel";
+import TelegramHubCard, { TelegramHubData } from "@/components/dashboard/TelegramHubCard";
 import FidelitySettingsPanel, { FidelitySettingsData } from "@/components/dashboard/FidelitySettingsPanel";
 import { Send, Award } from "lucide-react";
 import { useTenantConfig } from "@/components/providers/TenantConfigProvider";
@@ -117,12 +117,7 @@ export default function TasklyImpostazioniPage() {
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; text: string } | null>(null);
   // Telegram & Fidelity State
-  const [telegramSettings, setTelegramSettings] = useState<TelegramSettingsData>({
-    enabled: false,
-    botToken: "",
-    botUsername: "",
-    staffChatId: "",
-  });
+  const [telegramHub, setTelegramHub] = useState<TelegramHubData | null>(null);
 
   const [fidelitySettings, setFidelitySettings] = useState<FidelitySettingsData>({
     enabled: false,
@@ -238,7 +233,7 @@ export default function TasklyImpostazioniPage() {
             emailUfficio: data.emailUfficio || f.emailUfficio,
             telefonoUrgenze: data.telefonoUrgenze || f.telefonoUrgenze,
           }));
-          if (data.telegramSettings) setTelegramSettings(data.telegramSettings);
+          if (data?.telegramHub) setTelegramHub(data.telegramHub);
           if (data.fidelitySettings) setFidelitySettings(data.fidelitySettings);
         }
       })
@@ -313,7 +308,6 @@ export default function TasklyImpostazioniPage() {
           coloreAccento: form.coloreAccento,
           emailUfficio: form.emailUfficio,
           telefonoUrgenze: form.telefonoUrgenze,
-          telegramSettings,
           fidelitySettings,
         }),
       });
@@ -759,7 +753,15 @@ export default function TasklyImpostazioniPage() {
             <input
               type="checkbox"
               checked={form.whatsappAbilitato}
-              onChange={(e) => setForm({ ...form, whatsappAbilitato: e.target.checked })}
+              onChange={(e) => {
+                const nextVal = e.target.checked;
+                setForm({ ...form, whatsappAbilitato: nextVal });
+                fetch("/api/impostazioni", {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ whatsappAbilitato: nextVal }),
+                }).catch(() => {});
+              }}
               className="w-5 h-5 accent-indigo-600 rounded cursor-pointer"
             />
           </div>
@@ -770,6 +772,36 @@ export default function TasklyImpostazioniPage() {
               Gentile &#123;&#123;nome_cliente&#125;&#125;, la richiesta di pronto intervento #&#123;&#123;id_ticket&#125;&#125; è stata assegnata al tecnico &#123;&#123;nome_tecnico&#125;&#125;. Orario stimato di arrivo: &#123;&#123;orario_stimato&#125;&#125;. Per dettagli: &#123;&#123;link_ticket&#125;&#125;
             </div>
           </div>
+        </div>
+      )}
+
+      {/* TAB: TELEGRAM HUB & STAFF */}
+      {activeTab === "telegram" && (
+        <div className="space-y-4">
+          <TelegramHubCard hub={telegramHub} />
+        </div>
+      )}
+
+      {/* TAB: FIDELITY & PUNTI */}
+      {activeTab === "fidelity" && (
+        <div className="space-y-4">
+          <FidelitySettingsPanel
+            data={fidelitySettings}
+            onChange={(updated) => {
+              const toggled =
+                updated.enabled !== fidelitySettings.enabled ||
+                Boolean(updated.compleanno?.enabled) !== Boolean(fidelitySettings.compleanno?.enabled) ||
+                (updated.rewards?.length || 0) !== (fidelitySettings.rewards?.length || 0);
+              setFidelitySettings(updated);
+              if (toggled) {
+                fetch("/api/impostazioni", {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ fidelitySettings: updated }),
+                }).catch(() => {});
+              }
+            }}
+          />
         </div>
       )}
 
