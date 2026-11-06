@@ -1,5 +1,25 @@
 ﻿# 🚀 Taskly — Release Notes
 
+## Novità della Versione 1.1.2 (Patch)
+
+### 1. 👤 Anagrafica Clienti Vera
+- **Un numero, un cliente**: nasce l'anagrafica clienti, una scheda per ogni numero di telefono (anche scritto con spazi, trattini o +39). Alla prima apertura si crea da sola dagli interventi già registrati; ogni nuova richiesta di intervento aggiorna o crea la scheda, senza doppioni.
+- **Scheda cliente** con data di nascita facoltativa, consenso promozionale, avviso per i telefoni fissi (non ricevono WhatsApp né messaggi), storico interventi, punti e buoni attivi. La finestra sta sempre nello schermo.
+
+### 2. 🎟️ Fedeltà a Punti Vera
+- **Punti sui lavori**: quando un intervento è completato (anche dal rapportino di lavoro) il cliente guadagna i punti del costo finale, una sola volta per intervento e con storno se viene riaperto.
+- **Cassa fedeltà**, premi scelti dal titolare e **tessera digitale** con logo e colori dell'azienda (link privato con QR), aggiungibile alla schermata Home del telefono con il logo come icona. Le pagine Fedeltà e Buoni non sono più schermate di esempio.
+
+### 3. 🎁 Buoni Completi, Invio e Stampa
+- **Un buono per ogni motivo**: regalo, sconto, compensazione, gesto commerciale, premio punti, compleanno, promozione; valore in euro, percentuale o intervento in omaggio; scadenza facoltativa, spesa minima, uso in più volte o unico.
+- **Cassa con anteprima**, annullo con motivo e movimenti registrati. **Email** (di default, dal servizio Taaaac), **WhatsApp a scelta dell'esercente** (mai in automatico, mai verso i fissi), pagina del buono con QR, **stampa A4 o ricevuta da 80 mm** e ristampa con lo stesso codice.
+
+### 4. 🎂 Compleanno e Premi che Diventano Buoni
+- **Buono compleanno automatico**, una volta per cliente e per anno, con email solo a chi ha dato il consenso. Parte quando si apre la pagina Buoni o da `/api/cron/compleanni`.
+- **Premio punti → buono**: riscattando un premio si scalano i punti e nasce un buono intestato al cliente, nella stessa operazione.
+
+---
+
 ## Novità della Versione 1.1.1 (Patch)
 
 ### 1. ✈️ Telegram Gestito da Taaaac Core (Hub Centralizzato)

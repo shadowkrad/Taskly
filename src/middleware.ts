@@ -28,7 +28,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  const response = NextResponse.next();
+  // Il layout generale deve sapere se e' la tessera del cliente (ha icona e manifest propri)
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-pathname', request.nextUrl.pathname);
+  const response = NextResponse.next({ request: { headers: requestHeaders } });
 
   // Security Headers
   response.headers.set("X-Content-Type-Options", "nosniff");
@@ -43,5 +46,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/tasks/:path*', '/admin', '/admin/:path*', '/login'],
+  matcher: ['/dashboard/:path*', '/tasks/:path*', '/admin', '/admin/:path*', '/login', '/tessera/:path*'],
 };

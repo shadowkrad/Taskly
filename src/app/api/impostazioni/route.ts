@@ -50,6 +50,8 @@ export async function GET() {
           pointsPerEuro: fidelityRules?.pointsPerEuro || 1,
           welcomeBonusPoints: fidelityRules?.welcomeBonusPoints || 15,
           minPointsToRedeem: fidelityRules?.minPointsToRedeem || 50,
+          rewardVoucherMonths: fidelityRules?.rewardVoucherMonths ?? 6,
+          compleanno: fidelityRules?.compleanno,
           rewards: fidelityRules?.rewards || [
             { id: "rew_t1", name: "Diritto di Chiamata Urgente H24 Gratuito", pointsRequired: 50, rewardType: "FREE_ITEM", freeItemName: "Azzeramento costo fisso uscita tecnico per urgenze" },
             { id: "rew_t2", name: "Sconto 25€ su Manutenzione o Riparazione", pointsRequired: 120, rewardType: "DISCOUNT", discountAmount: 25 },
