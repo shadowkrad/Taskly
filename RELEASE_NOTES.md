@@ -2,6 +2,7 @@
 
 ## Novità della Versione 1.1.2 (Patch)
 
+- Il pallino WhatsApp compare solo nella vetrina pubblica del sito: non piu' nelle pagine interne, nelle tessere e nei buoni dei clienti (prima bastava una pagina non prevista per vederlo).
 ### 1. 👤 Anagrafica Clienti Vera
 - **Un numero, un cliente**: nasce l'anagrafica clienti, una scheda per ogni numero di telefono (anche scritto con spazi, trattini o +39). Alla prima apertura si crea da sola dagli interventi già registrati; ogni nuova richiesta di intervento aggiorna o crea la scheda, senza doppioni.
 - **Scheda cliente** con data di nascita facoltativa, consenso promozionale, avviso per i telefoni fissi (non ricevono WhatsApp né messaggi), storico interventi, punti e buoni attivi. La finestra sta sempre nello schermo.
