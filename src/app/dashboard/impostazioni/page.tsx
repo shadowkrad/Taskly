@@ -584,7 +584,7 @@ export default function TasklyImpostazioniPage() {
               type="checkbox"
               checked={form.h24Attivo}
               onChange={(e) => setForm({ ...form, h24Attivo: e.target.checked })}
-              className="w-5 h-5 accent-indigo-600 rounded cursor-pointer"
+              className="shrink-0 w-5 h-5 accent-indigo-600 rounded cursor-pointer"
             />
           </div>
 
