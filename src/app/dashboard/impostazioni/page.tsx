@@ -30,10 +30,11 @@ import RegisteredDevicesCard from "@/components/dashboard/RegisteredDevicesCard"
 import ShowcaseVisualStudio from "@/components/dashboard/showcase/ShowcaseVisualStudio";
 import TelegramHubCard, { TelegramHubData } from "@/components/dashboard/TelegramHubCard";
 import FidelitySettingsPanel, { FidelitySettingsData } from "@/components/dashboard/FidelitySettingsPanel";
-import { Send, Award } from "lucide-react";
+import EditorCartaGrafica from "@/components/carta-grafica/EditorCartaGrafica";
+import { Send, Award, CreditCard } from "lucide-react";
 import { useTenantConfig } from "@/components/providers/TenantConfigProvider";
 
-type SettingsTab = "attivita" | "reperibilita" | "email" | "whatsapp" | "telegram" | "fidelity" | "dispositivi" | "aspetto";
+type SettingsTab = "attivita" | "reperibilita" | "email" | "whatsapp" | "telegram" | "fidelity" | "dispositivi" | "aspetto" | "carta-grafica";
 
 interface TabItem {
   id: SettingsTab;
@@ -108,6 +109,14 @@ const TABS: TabItem[] = [
     iconComponent: Palette,
     shortDescription: "Logo, colori e rapportini",
     description: "Personalizzazione logo tecnico, tema indaco e layout rapportino",
+  },
+  {
+    id: "carta-grafica",
+    label: "Biglietti & Buoni",
+    shortLabel: "Biglietti",
+    iconComponent: CreditCard,
+    shortDescription: "Grafica buoni e biglietto da visita",
+    description: "Editor visivo per buoni regalo e biglietti da visita fronte/retro con sfondo personalizzato",
   },
 ];
 
@@ -861,6 +870,11 @@ export default function TasklyImpostazioniPage() {
       {activeTab === "aspetto" && (
         <div className="space-y-6">
           <ShowcaseVisualStudio />
+        </div>
+      )}
+      {activeTab === "carta-grafica" && (
+        <div className="space-y-6">
+          <EditorCartaGrafica />
         </div>
       )}
         </main>
