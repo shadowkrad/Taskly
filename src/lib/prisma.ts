@@ -181,7 +181,11 @@ export async function ensureDatabaseSchema() {
         ["h24Attivo", "BOOLEAN NOT NULL DEFAULT 1"],
       ] as const) {
         if (!(Array.isArray(info) && info.some((c) => c.name.toLowerCase() === col.toLowerCase()))) {
-          await prisma.$executeRawUnsafe(`ALTER TABLE "TenantLocalCache" ADD COLUMN "${col}" ${def};`);
+          try {
+            await prisma.$executeRawUnsafe(`ALTER TABLE "TenantLocalCache" ADD COLUMN "${col}" ${def};`);
+          } catch {
+            // colonna gia' creata da una richiesta in parallelo
+          }
         }
       }
       await prisma.$executeRawUnsafe(`
