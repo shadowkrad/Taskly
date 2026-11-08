@@ -172,6 +172,18 @@ export async function ensureDatabaseSchema() {
       if (!rispettaCol) {
         await prisma.$executeRawUnsafe(`ALTER TABLE "TenantLocalCache" ADD COLUMN "rispettaFestivitaNazionali" BOOLEAN DEFAULT 1;`);
       }
+      // Dati attivita' e orari (1.1.2): sede, orari di presenza e Pronto Intervento H24
+      for (const [col, def] of [
+        ["indirizzo", "TEXT"],
+        ["orariFeriali", "TEXT DEFAULT '08:00 – 12:30 / 14:00 – 18:30'"],
+        ["orariSabato", "TEXT DEFAULT '08:30 – 13:00 (Pronto Intervento)'"],
+        ["orariDomenica", "TEXT DEFAULT 'Chiuso (Solo Emergenze)'"],
+        ["h24Attivo", "BOOLEAN NOT NULL DEFAULT 1"],
+      ] as const) {
+        if (!(Array.isArray(info) && info.some((c) => c.name.toLowerCase() === col.toLowerCase()))) {
+          await prisma.$executeRawUnsafe(`ALTER TABLE "TenantLocalCache" ADD COLUMN "${col}" ${def};`);
+        }
+      }
       await prisma.$executeRawUnsafe(`
         CREATE TABLE IF NOT EXISTS "EccezioneCalendario" (
           "id" TEXT NOT NULL PRIMARY KEY,

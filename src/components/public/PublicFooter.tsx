@@ -58,7 +58,7 @@ export function PublicFooter({ showcase }: PublicFooterProps) {
               <span>{showcase?.customLabels?.contactTitle || "Contatti & Sede"}</span>
             </h4>
             <ul className="space-y-2 text-xs">
-              {(contactInfo.phone || config.contact?.phone) && (
+              {showcase?.sections?.showPhone !== false && (contactInfo.phone || config.contact?.phone) && (
                 <li className="flex items-center gap-2">
                   <Phone className="w-3.5 h-3.5 text-indigo-400" />
                   <a href={`tel:${contactInfo.phone || config.contact?.phone}`} className="hover:text-white transition-colors">
@@ -66,16 +66,18 @@ export function PublicFooter({ showcase }: PublicFooterProps) {
                   </a>
                 </li>
               )}
-              {(contactInfo.email || config.contact?.email) && (
+              {showcase?.sections?.showEmail !== false && (contactInfo.email || config.contact?.email) && (
                 <li className="flex items-center gap-2">
                   <Mail className="w-3.5 h-3.5 text-indigo-400" />
                   <span>{contactInfo.email || config.contact?.email}</span>
                 </li>
               )}
-              <li className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-indigo-400" />
-                <span>{contactInfo.address || config.contact?.address || "Sede Operativa Territoriale"}</span>
-              </li>
+              {showcase?.sections?.showAddress !== false && (
+                <li className="flex items-center gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+                  <span>{contactInfo.address || config.contact?.address || "Sede Operativa Territoriale"}</span>
+                </li>
+              )}
             </ul>
           </div>
         </div>

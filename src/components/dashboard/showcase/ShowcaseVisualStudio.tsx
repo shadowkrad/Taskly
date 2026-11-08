@@ -992,11 +992,13 @@ export default function ShowcaseVisualStudio() {
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
-                    Testo Descrittivo Completo
+                    Testo Descrittivo Completo <span className="normal-case font-normal text-slate-500">(si modifica in Impostazioni &gt; Attività)</span>
                   </label>
                   <textarea
                     rows={4}
-                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-400 focus:outline-none resize-y"
+                    className="w-full border border-slate-200 rounded-xl px-3 py-2 text-xs bg-slate-100 text-slate-500 cursor-not-allowed resize-y"
+                    readOnly
+                    title="Si modifica in Impostazioni > Attività"
                     value={config.about.description}
                     onChange={(e) =>
                       setConfig((prev) => ({
@@ -1139,6 +1141,9 @@ export default function ShowcaseVisualStudio() {
                     { id: "showAbout", label: "Chi Siamo & Squadra" },
                     { id: "showHours", label: "Reperibilità H24 & Orari" },
                     { id: "showContact", label: "Centrale Operativa & Contatti" },
+                    { id: "showAddress", label: "Mostra Sede / Indirizzo" },
+                    { id: "showPhone", label: "Mostra Telefono" },
+                    { id: "showEmail", label: "Mostra Email" },
                   ].map((sec) => (
                     <label
                       key={sec.id}
@@ -1157,7 +1162,7 @@ export default function ShowcaseVisualStudio() {
                             },
                           }))
                         }
-                        className="accent-indigo-600 w-4 h-4 rounded cursor-pointer"
+                        className="shrink-0 accent-indigo-600 w-5 h-5 rounded cursor-pointer"
                       />
                     </label>
                   ))}

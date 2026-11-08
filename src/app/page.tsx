@@ -5,7 +5,7 @@ import { HeroSection } from '@/components/public/HeroSection';
 import { ServicesSection } from '@/components/public/ServicesSection';
 import { PublicFooter } from '@/components/public/PublicFooter';
 import FloatingWhatsAppWidget from '@/components/public/FloatingWhatsAppWidget';
-import { parseShowcaseConfig } from '@/lib/showcase-defaults';
+import { caricaVetrinaUnificata } from '@/lib/anagrafica-attivita';
 import { Wrench, ArrowRight, Quote, ShieldCheck } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -25,7 +25,7 @@ async function getTasklyData() {
 
 export default async function HomePage() {
   const { cache } = await getTasklyData();
-  const showcase = parseShowcaseConfig((cache as any)?.showcaseConfig);
+  const { showcase } = await caricaVetrinaUnificata();
 
   const phone = cache?.phone || "+39 340 1234567";
 
