@@ -19,6 +19,11 @@
 - **Buono compleanno automatico**, una volta per cliente e per anno, con email solo a chi ha dato il consenso. Parte quando si apre la pagina Buoni o da `/api/cron/compleanni`.
 - **Premio punti → buono**: riscattando un premio si scalano i punti e nasce un buono intestato al cliente, nella stessa operazione.
 
+### 5. 🏪 Dati dell'Attività e Orari in un Solo Posto
+- **Una sola sede per i dati**: nome, sede, telefono, email e **descrizione** si modificano solo in Impostazioni > Attività; gli **orari di presenza** (Lun-Ven, Sabato, Domenica) e il Pronto Intervento H24 solo in Impostazioni > Reperibilità & Tariffe. Prima la pagina Orari mostrava un "salvato" che non salvava nulla e la sincronizzazione mandava a Google orari inventati.
+- **Vetrina, piè di pagina, Google, Facebook e Instagram** leggono questi stessi dati: orari identici ovunque, con le chiusure e le ferie della pagina Orari. Con il Pronto Intervento H24 attivo l'attività risulta aperta 24 ore su 24.
+- **Studio Aspetto**: mostra questi dati in sola lettura e permette solo di scegliere cosa far vedere (sede, telefono, email); colori e logo restano solo nello Studio. Lo Studio non può più sovrascrivere i dati dell'attività.
+
 ---
 
 ## Novità della Versione 1.1.1 (Patch)

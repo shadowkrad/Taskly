@@ -1,4 +1,4 @@
-import { prisma } from './prisma';
+import { prisma, ensureDatabaseSchema } from './prisma';
 
 export type LicenseStatus = 'ATTIVO' | 'SOSPESO' | 'IN_SCADENZA';
 
@@ -70,20 +70,11 @@ export async function fetchTenantConfig(): Promise<TenantConfig> {
 
   let cached: any = null;
   try {
+    await ensureDatabaseSchema();
     cached = await prisma.tenantLocalCache.findUnique({
       where: { id: 'singleton' },
     });
   } catch {}
-
-  let localShowcasePhone: string | undefined;
-  let localShowcaseEmail: string | undefined;
-  if (cached?.showcaseConfig) {
-    try {
-      const sc = JSON.parse(cached.showcaseConfig);
-      if (sc?.contactInfo?.phone?.trim()) localShowcasePhone = sc.contactInfo.phone.trim();
-      if (sc?.contactInfo?.email?.trim()) localShowcaseEmail = sc.contactInfo.email.trim();
-    } catch {}
-  }
 
   let config: TenantConfig = {
     ...DEFAULT_TENANT_CONFIG,
@@ -166,9 +157,9 @@ export async function fetchTenantConfig(): Promise<TenantConfig> {
     if (cached.primaryColor) config.theme.primaryColor = cached.primaryColor;
     if (cached.accentColor) config.theme.accentColor = cached.accentColor;
     const resolvedPhone =
-      cached.phone || localShowcasePhone || config.contact?.phone || '+39 340 1234567';
+      cached.phone || config.contact?.phone || '+39 340 1234567';
     const resolvedEmail =
-      cached.contactEmail || localShowcaseEmail || config.contact?.email;
+      cached.email || cached.contactEmail || config.contact?.email;
     config.contact = {
       ...config.contact,
       phone: resolvedPhone,

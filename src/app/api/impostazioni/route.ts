@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma, ensureDatabaseSchema } from "@/lib/prisma";
 import { fetchTenantConfig } from "@/lib/taaaac-client";
+import { parseShowcaseConfig } from "@/lib/showcase-defaults";
+import { riallineaVetrinaSalvata } from "@/lib/anagrafica-attivita";
 
 /**
  * Telegram è gestito da Taaaac Core: qui si legge solo lo stato (mai token né chat ID).
@@ -22,6 +24,7 @@ async function getTelegramHub() {
 
 export async function GET() {
   try {
+    await ensureDatabaseSchema();
     const config = await prisma.tenantLocalCache.findUnique({
       where: { id: "singleton" },
     });
@@ -44,6 +47,12 @@ export async function GET() {
         coloreAccento: config.accentColor,
         emailUfficio: config.email || "",
         telefonoUrgenze: config.phone || "",
+        indirizzo: (config as any).indirizzo || "",
+        descrizione: parseShowcaseConfig((config as any).showcaseConfig).about.description || "",
+        orariFeriali: (config as any).orariFeriali || "08:00 – 12:30 / 14:00 – 18:30",
+        orariSabato: (config as any).orariSabato || "08:30 – 13:00 (Pronto Intervento)",
+        orariDomenica: (config as any).orariDomenica || "Chiuso (Solo Emergenze)",
+        h24Attivo: (config as any).h24Attivo ?? true,
         telegramHub: await getTelegramHub(),
         fidelitySettings: {
           enabled: Boolean(config.fidelityEnabled),
@@ -69,6 +78,12 @@ export async function GET() {
       coloreAccento: "#4f46e5",
       emailUfficio: "assistenza@tasklyimpianti.it",
       telefonoUrgenze: "+39 340 1234567",
+      indirizzo: "",
+      descrizione: "",
+      orariFeriali: "08:00 – 12:30 / 14:00 – 18:30",
+      orariSabato: "08:30 – 13:00 (Pronto Intervento)",
+      orariDomenica: "Chiuso (Solo Emergenze)",
+      h24Attivo: true,
       telegramHub: await getTelegramHub(),
       fidelitySettings: {
         enabled: false,
@@ -86,8 +101,9 @@ export async function GET() {
 
 export async function PUT(req: NextRequest) {
   try {
+    await ensureDatabaseSchema();
     const body = await req.json();
-    const { nomeAttivita, logoUrl, faviconUrl, colorePrimario, coloreAccento, emailUfficio, telefonoUrgenze, fidelitySettings } = body;
+    const { nomeAttivita, logoUrl, faviconUrl, colorePrimario, coloreAccento, emailUfficio, telefonoUrgenze, indirizzo, descrizione, orariFeriali, orariSabato, orariDomenica, h24Attivo, fidelitySettings } = body;
 
     const updated = await prisma.tenantLocalCache.upsert({
       where: { id: "singleton" },
@@ -99,6 +115,11 @@ export async function PUT(req: NextRequest) {
         ...(coloreAccento !== undefined && { accentColor: String(coloreAccento) }),
         ...(emailUfficio !== undefined && { email: String(emailUfficio) }),
         ...(telefonoUrgenze !== undefined && { phone: String(telefonoUrgenze) }),
+        ...(indirizzo !== undefined && { indirizzo: String(indirizzo) }),
+        ...(orariFeriali !== undefined && { orariFeriali: String(orariFeriali) }),
+        ...(orariSabato !== undefined && { orariSabato: String(orariSabato) }),
+        ...(orariDomenica !== undefined && { orariDomenica: String(orariDomenica) }),
+        ...(h24Attivo !== undefined && { h24Attivo: Boolean(h24Attivo) }),
         ...(fidelitySettings?.enabled !== undefined && { fidelityEnabled: Boolean(fidelitySettings.enabled) }),
         ...(fidelitySettings !== undefined && { fidelityRules: JSON.stringify(fidelitySettings) }),
       },
@@ -115,6 +136,13 @@ export async function PUT(req: NextRequest) {
         fidelityRules: fidelitySettings ? JSON.stringify(fidelitySettings) : "{}",
       },
     });
+
+    // Vetrina e invio ai canali leggono SEMPRE i dati appena salvati: riallinea la copia salvata nello Studio
+    try {
+      await riallineaVetrinaSalvata(typeof descrizione === "string" ? descrizione : undefined);
+    } catch (e) {
+      console.error("Riallineamento vetrina fallito:", e);
+    }
 
     return NextResponse.json({ success: true, config: updated });
   } catch (error) {

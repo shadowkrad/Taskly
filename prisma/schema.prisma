@@ -200,6 +200,11 @@ model TenantLocalCache {
   email        String?
   contactEmail String?
   phone        String?
+  indirizzo    String?
+  orariFeriali  String? @default("08:00 – 12:30 / 14:00 – 18:30")
+  orariSabato   String? @default("08:30 – 13:00 (Pronto Intervento)")
+  orariDomenica String? @default("Chiuso (Solo Emergenze)")
+  h24Attivo     Boolean @default(true)
   showcaseConfig String? @default("{}")
   telegramEnabled     Boolean   @default(false)
   telegramBotToken    String?

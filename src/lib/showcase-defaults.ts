@@ -72,6 +72,9 @@ export interface ShowcaseConfig {
     showAbout: boolean;
     showHours: boolean;
     showContact: boolean;
+    showAddress?: boolean;
+    showPhone?: boolean;
+    showEmail?: boolean;
   };
 
   // Informazioni di Contatto & Orari
@@ -171,6 +174,9 @@ export const DEFAULT_TASKLY_SHOWCASE_CONFIG: ShowcaseConfig = {
     showAbout: true,
     showHours: true,
     showContact: true,
+    showAddress: true,
+    showPhone: true,
+    showEmail: true,
   },
 
   customLabels: {

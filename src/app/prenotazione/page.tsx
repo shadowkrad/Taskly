@@ -2,11 +2,13 @@ import React from "react";
 import Link from "next/link";
 import { BookingForm } from "@/components/public/BookingForm";
 import { PublicFooter } from "@/components/public/PublicFooter";
+import { caricaVetrinaUnificata } from "@/lib/anagrafica-attivita";
 import { ArrowLeft, Wrench, Shield } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default function PrenotazioneInterventoPage() {
+export default async function PrenotazioneInterventoPage() {
+  const { showcase } = await caricaVetrinaUnificata().catch(() => ({ showcase: undefined }));
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
       {/* Mini Header Nav */}
@@ -46,7 +48,7 @@ export default function PrenotazioneInterventoPage() {
         </div>
       </main>
 
-      <PublicFooter />
+      <PublicFooter showcase={showcase} />
     </div>
   );
 }

@@ -132,7 +132,11 @@ export default function TasklyImpostazioniPage() {
     nomeAttivita: config?.nomeAttivita || "Taskly Impianti & Servizi",
     referente: "Alessio Guidelli",
     partitaIva: "IT02345678901",
-    indirizzo: "Via dell'Artigianato, 18 - 52100 Arezzo (AR)",
+    indirizzo: "",
+    descrizione: "",
+    orariFeriali: "08:00 – 12:30 / 14:00 – 18:30",
+    orariSabato: "08:30 – 13:00 (Pronto Intervento)",
+    orariDomenica: "Chiuso (Solo Emergenze)",
     telefonoUrgenze: "+39 340 1234567",
     emailUfficio: "assistenza@tasklyimpianti.it",
     h24Attivo: true,
@@ -161,39 +165,10 @@ export default function TasklyImpostazioniPage() {
     setSyncingOmnichannel(true);
     setFeedback(null);
     try {
-      const days: ("MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY")[] = [
-        "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"
-      ];
-      
-      const weeklyHours = days.map((d) => {
-        if (form.h24Attivo) {
-          return {
-            dayOfWeek: d,
-            isOpen: true,
-            slots: [{ open: "00:00", close: "23:59" }],
-          };
-        }
-        if (d === "SUNDAY") {
-          return { dayOfWeek: d, isOpen: false, slots: [] };
-        }
-        if (d === "SATURDAY") {
-          return {
-            dayOfWeek: d,
-            isOpen: true,
-            slots: [{ open: "08:00", close: "13:00" }],
-          };
-        }
-        return {
-          dayOfWeek: d,
-          isOpen: true,
-          slots: [{ open: "08:00", close: "18:00" }],
-        };
-      });
-
       const res = await fetch("/api/sync/channels", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ weeklyHours }),
+        body: JSON.stringify({}),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -232,6 +207,12 @@ export default function TasklyImpostazioniPage() {
             coloreAccento: data.coloreAccento || f.coloreAccento,
             emailUfficio: data.emailUfficio || f.emailUfficio,
             telefonoUrgenze: data.telefonoUrgenze || f.telefonoUrgenze,
+            indirizzo: data.indirizzo || "",
+            descrizione: data.descrizione || "",
+            orariFeriali: data.orariFeriali || f.orariFeriali,
+            orariSabato: data.orariSabato || f.orariSabato,
+            orariDomenica: data.orariDomenica || f.orariDomenica,
+            h24Attivo: data.h24Attivo !== undefined ? Boolean(data.h24Attivo) : f.h24Attivo,
           }));
           if (data?.telegramHub) setTelegramHub(data.telegramHub);
           if (data.fidelitySettings) setFidelitySettings(data.fidelitySettings);
@@ -308,6 +289,12 @@ export default function TasklyImpostazioniPage() {
           coloreAccento: form.coloreAccento,
           emailUfficio: form.emailUfficio,
           telefonoUrgenze: form.telefonoUrgenze,
+          indirizzo: form.indirizzo,
+          descrizione: form.descrizione,
+          orariFeriali: form.orariFeriali,
+          orariSabato: form.orariSabato,
+          orariDomenica: form.orariDomenica,
+          h24Attivo: form.h24Attivo,
           fidelitySettings,
         }),
       });
@@ -567,12 +554,70 @@ export default function TasklyImpostazioniPage() {
               />
             </div>
           </div>
+
+          <div className="pt-2">
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Descrizione dell&apos;attività</label>
+            <textarea
+              rows={4}
+              value={form.descrizione}
+              onChange={(e) => setForm({ ...form, descrizione: e.target.value })}
+              placeholder="Racconta in poche righe chi siete, il parco mezzi e le abilitazioni"
+              className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden resize-none"
+            />
+            <p className="text-[11px] text-slate-500 mt-1">
+              Nome, sede, telefono, email, descrizione e orari si modificano solo nelle Impostazioni: la vetrina li legge da qui
+              (nello Studio scegli quali mostrare). Colori e logo si cambiano solo in &quot;Aspetto&quot;.
+            </p>
+          </div>
         </div>
       )}
 
       {/* TAB 2: REPERIBILITÀ & TARIFFE */}
       {activeTab === "reperibilita" && (
         <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-xs space-y-6">
+          <div className="space-y-3">
+            <div>
+              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">⏰ Orari di presenza</h3>
+              <p className="text-[11px] text-slate-500">
+                Sono gli orari ufficiali: li trovi nella vetrina e vengono inviati a Google, Facebook e Instagram
+                (&quot;Chiuso&quot; per i giorni di chiusura; con il Pronto Intervento H24 attivo risulti aperto 24 ore su 24).
+                Ferie e festività si impostano nella pagina Orari. Salva prima di sincronizzare.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Lunedì – Venerdì</label>
+                <input
+                  type="text"
+                  value={form.orariFeriali}
+                  onChange={(e) => setForm({ ...form, orariFeriali: e.target.value })}
+                  placeholder="08:00 – 12:30 / 14:00 – 18:30"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Sabato</label>
+                <input
+                  type="text"
+                  value={form.orariSabato}
+                  onChange={(e) => setForm({ ...form, orariSabato: e.target.value })}
+                  placeholder="08:30 – 13:00"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1">Domenica &amp; Festivi</label>
+                <input
+                  type="text"
+                  value={form.orariDomenica}
+                  onChange={(e) => setForm({ ...form, orariDomenica: e.target.value })}
+                  placeholder="Chiuso"
+                  className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden"
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="flex items-center justify-between p-4 rounded-xl bg-indigo-50/60 border border-indigo-100">
             <div>
               <p className="text-sm font-bold text-slate-900">Abilita Pronto Intervento H24</p>
