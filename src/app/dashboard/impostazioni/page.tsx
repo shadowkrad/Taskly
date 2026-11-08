@@ -807,7 +807,7 @@ export default function TasklyImpostazioniPage() {
                   body: JSON.stringify({ whatsappAbilitato: nextVal }),
                 }).catch(() => {});
               }}
-              className="w-5 h-5 accent-indigo-600 rounded cursor-pointer"
+              className="shrink-0 w-5 h-5 accent-indigo-600 rounded cursor-pointer"
             />
           </div>
 
