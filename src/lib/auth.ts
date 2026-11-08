@@ -1,11 +1,24 @@
 // Gestione autenticazione e sessioni sicure per Taskly (Taaaac Ecosystem)
 
+/**
+ * La password di prova "Admin123!" vale SOLO in sviluppo e nelle demo (Vercel / IS_DEMO).
+ * In produzione sul server del cliente non esiste: si entra solo con la password o il PIN impostati nell'ambiente.
+ */
+function passwordDiProvaConsentita(): boolean {
+  return (
+    process.env.NODE_ENV !== "production" ||
+    process.env.IS_DEMO === "true" ||
+    process.env.NEXT_PUBLIC_IS_DEMO === "true" ||
+    Boolean(process.env.VERCEL)
+  );
+}
+
 const SESSION_COOKIE_NAME = 'taskly_session';
-const AUTH_SECRET = process.env.AUTH_SECRET || 'taskly-taaaac-secret-jwt-key-2026-safe';
+const AUTH_SECRET = process.env.AUTH_SECRET || (passwordDiProvaConsentita() ? 'taskly-taaaac-secret-jwt-key-2026-safe' : '');
 
 export const DEFAULT_ADMIN_CREDENTIALS = {
   email: process.env.ADMIN_EMAIL || 'admin@taskly.it',
-  password: process.env.ADMIN_PASSWORD || 'Admin123!',
+  password: process.env.ADMIN_PASSWORD || (passwordDiProvaConsentita() ? 'Admin123!' : ''),
 };
 
 /**
