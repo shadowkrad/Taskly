@@ -2,6 +2,7 @@ import FloatingWhatsAppWidget from "@/components/public/FloatingWhatsAppWidget";
 import type { Metadata } from 'next';
 import './globals.css';
 import { fetchTenantConfig } from '@/lib/taaaac';
+import { getPwaIconVersion, pwaIconUrl } from '@/lib/pwa-icon-version';
 import { headers } from 'next/headers';
 import { TenantProvider } from '@/components/tenant-provider';
 import { Navbar } from '@/components/navbar';
@@ -9,7 +10,10 @@ import { Navbar } from '@/components/navbar';
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const config = await fetchTenantConfig();
+  const [config, v] = await Promise.all([
+    fetchTenantConfig(),
+    getPwaIconVersion(),
+  ]);
   const brand = config.theme.brandName || "Assistenza Tecnica & Interventi";
   return {
     title: {
@@ -20,10 +24,10 @@ export async function generateMetadata(): Promise<Metadata> {
     manifest: '/manifest.webmanifest',
     icons: {
       icon: [
-        { url: "/api/pwa-icon?size=192", sizes: "192x192", type: "image/png" },
-        { url: "/favicon.ico", sizes: "any" },
+        { url: pwaIconUrl(32, v), sizes: "32x32", type: "image/png" },
+        { url: pwaIconUrl(192, v), sizes: "192x192", type: "image/png" },
       ],
-      apple: [{ url: "/api/pwa-icon?size=180", sizes: "180x180", type: "image/png" }],
+      apple: [{ url: pwaIconUrl(180, v), sizes: "180x180", type: "image/png" }],
     },
     appleWebApp: {
       capable: true,
@@ -44,7 +48,10 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const tenantConfig = await fetchTenantConfig();
+  const [tenantConfig, v] = await Promise.all([
+    fetchTenantConfig(),
+    getPwaIconVersion(),
+  ]);
 
   const hasWhatsAppModule =
     Array.isArray(tenantConfig.addons) &&
@@ -60,8 +67,9 @@ export default async function RootLayout({
       <head>
         {!eTessera && (
           <>
-            <link rel="icon" href="/api/pwa-icon?size=192" sizes="any" />
-            <link rel="apple-touch-icon" sizes="180x180" href="/api/pwa-icon?size=180" />
+            <link rel="icon" type="image/png" sizes="32x32" href={pwaIconUrl(32, v)} />
+            <link rel="icon" type="image/png" sizes="192x192" href={pwaIconUrl(192, v)} />
+            <link rel="apple-touch-icon" sizes="180x180" href={pwaIconUrl(180, v)} />
             <link rel="manifest" href="/manifest.webmanifest" />
           </>
         )}
