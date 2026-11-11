@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Il tema scuro si attiva solo con la classe "dark" (non segue piu' il tema del computer) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --color-brand-primary: #4f46e5;
   --color-brand-accent: #06b6d4;
