@@ -7,6 +7,7 @@
 - **Impostazioni raggruppate per area e salvataggio comodo su mobile (`/dashboard/impostazioni`)**: le schede sono riunite in 5 gruppi chiari (*Attività*, *Notifiche*, *Fidelity e buoni*, *Aspetto*, *Dispositivi*; *Fidelity e buoni* visibile solo se attiva dal Portale) con barra fissa **Salva modifiche** su mobile.
 
 ### 👤 CRM & Scheda Cliente Unificata in Stile Schedly con Gestione Punti e Invio Tessera
+- **Fix allineamento overlay modale *Nuovo cliente* (`src/app/dashboard/clienti/page.tsx`)**: aggiunto `!mt-0` sull'overlay `fixed inset-0` dentro `space-y-6` per eliminare la fascia superiore scoperta all'apertura del modale.
 - **Lista CRM allineata (`/dashboard/clienti`) e nuova pagina scheda cliente (`/dashboard/clienti/[id]`)**: la lista mostra ora card responsive su mobile e tabella compatta su desktop con badge punti fedeltà e accesso diretto **Scheda →** alla pagina dettaglio completa (anagrafica, GDPR, buoni e storico interventi).
 - **Gestione punti nel profilo e invio manuale tessera (`ClienteFedeltaPanel`)**: nella scheda cliente si possono accreditare punti o riscattare premi direttamente nel profilo, aprire/copiare il link della tessera digitale e generare il messaggio personalizzato per inviare la scheda punti via **WhatsApp (`wa.me`)** o **Email (`mailto:`)**.
 - **`nomeAttivita` in `GET /api/clienti/[id]`**: aggiunto `brandName` da `TenantLocalCache` per i testi generati.
