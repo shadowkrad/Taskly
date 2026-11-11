@@ -187,24 +187,24 @@ export default function ClientiPage() {
             {/* Desktop */}
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left text-sm text-slate-600">
-                <thead className="bg-slate-50 text-xs uppercase tracking-wider text-slate-500 border-b border-slate-200">
+                <thead className="bg-slate-50 text-xs text-slate-500 border-b border-slate-200">
                   <tr>
-                    <th className="px-5 py-3">Cliente</th>
-                    <th className="px-5 py-3">Contatti</th>
-                    <th className="px-5 py-3">Indirizzo</th>
-                    <th className="px-5 py-3">Punti Fedeltà</th>
-                    <th className="px-5 py-3 text-right">Dettagli</th>
+                    <th className="px-4 py-4 font-semibold">Cliente</th>
+                    <th className="px-4 py-4 font-semibold">Contatti</th>
+                    <th className="px-4 py-4 font-semibold">Indirizzo</th>
+                    <th className="px-4 py-4 font-semibold">Punti Fedeltà</th>
+                    <th className="px-4 py-4 font-semibold text-right">Dettagli</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {clienti.map((c) => (
                     <tr key={c.id} className="hover:bg-indigo-50/20">
-                      <td className="px-5 py-3.5 font-semibold text-slate-900">{c.name}</td>
-                      <td className="px-5 py-3.5">
+                      <td className="px-4 py-5 align-middle font-semibold text-slate-900">{c.name}</td>
+                      <td className="px-4 py-5 align-middle">
                         <div className="text-xs text-indigo-700 font-bold flex items-center gap-1.5">
                           <span>{c.phone}</span>
                           {classificaTelefono(c.phone) === "FISSO" && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
+                            <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 font-semibold">
                               {ETICHETTA_TELEFONO.FISSO}
                             </span>
                           )}
@@ -212,19 +212,19 @@ export default function ClientiPage() {
                         {c.email ? (
                           <div className="text-xs text-slate-500 mt-0.5">{c.email}</div>
                         ) : (
-                          <div className="text-[11px] text-slate-400 italic mt-0.5">Nessuna email</div>
+                          <div className="text-xs text-slate-400 italic mt-0.5">Nessuna email</div>
                         )}
                       </td>
-                      <td className="px-5 py-3.5 text-xs text-slate-500 max-w-xs truncate">
+                      <td className="px-4 py-5 align-middle text-xs text-slate-500 max-w-xs truncate">
                         {c.address || "—"}
                       </td>
-                      <td className="px-5 py-3.5">
+                      <td className="px-4 py-5 align-middle">
                         <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100">
                           <Award className="w-3 h-3" />
                           {c.loyaltyPoints} pt
                         </span>
                       </td>
-                      <td className="px-5 py-3.5 text-right">
+                      <td className="px-4 py-5 align-middle text-right">
                         <Link
                           href={`/dashboard/clienti/${c.id}`}
                           className="text-indigo-600 font-semibold hover:underline text-xs"
