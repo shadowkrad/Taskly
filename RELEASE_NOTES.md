@@ -2,6 +2,11 @@
 
 ## Novità della Versione 1.1.3 (Patch)
 
+### 👤 CRM & Scheda Cliente Unificata in Stile Schedly con Gestione Punti e Invio Tessera
+- **Lista CRM allineata (`/dashboard/clienti`) e nuova pagina scheda cliente (`/dashboard/clienti/[id]`)**: la lista mostra ora card responsive su mobile e tabella compatta su desktop con badge punti fedeltà e accesso diretto **Scheda →** alla pagina dettaglio completa (anagrafica, GDPR, buoni e storico interventi).
+- **Gestione punti nel profilo e invio manuale tessera (`ClienteFedeltaPanel`)**: nella scheda cliente si possono accreditare punti o riscattare premi direttamente nel profilo, aprire/copiare il link della tessera digitale e generare il messaggio personalizzato per inviare la scheda punti via **WhatsApp (`wa.me`)** o **Email (`mailto:`)**.
+- **`nomeAttivita` in `GET /api/clienti/[id]`**: aggiunto `brandName` da `TenantLocalCache` per i testi generati.
+
 ### 📱 Icona dell'App e della Scheda Browser Sempre Nitida e Aggiornata
 - **Aggiornamento immediato al cambio logo/icona**: ogni volta che il titolare carica una nuova icona o un nuovo logo nello Studio/Impostazioni, l'indirizzo dell'icona nella pagina e nel manifesto PWA include automaticamente un codice di versione univoco (`&v=`). In questo modo browser e smartphone scaricano subito la nuova immagine senza restare bloccati sulla vecchia copia in memoria.
 - **Formato e dimensioni perfetti per ogni schermo (`sharp`)**: l'endpoint `/api/pwa-icon` e l'icona della tessera fedeltà digitale (`/tessera/[token]/icona`) convertono e ridimensionano sempre l'immagine in un **PNG quadrato reale** alle misure esatte richieste (`32×32`, `180×180`, `192×192`, `512×512`), partendo anche da immagini WebP, JPEG o SVG.

@@ -21,7 +21,7 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
 
   const tokenTessera = await assicuraTokenTessera(id);
   const ora = new Date();
-  const [buoni, interventi] = await Promise.all([
+  const [buoni, interventi, cache] = await Promise.all([
     prisma.giftCard.findMany({
       where: { clienteId: id, stato: "ATTIVA", OR: [{ dataScadenza: null }, { dataScadenza: { gte: ora } }] },
       orderBy: { createdAt: "desc" },
@@ -33,8 +33,17 @@ export async function GET(_req: NextRequest, { params }: Ctx) {
       take: 20,
       select: { id: true, serviceType: true, status: true, finalCost: true, estimatedCost: true, createdAt: true },
     }),
+    prisma.tenantLocalCache.findUnique({
+      where: { id: "singleton" },
+      select: { brandName: true },
+    }),
   ]);
-  return NextResponse.json({ cliente: { ...cliente, tokenTessera }, buoni, interventi });
+  return NextResponse.json({
+    cliente: { ...cliente, tokenTessera },
+    buoni,
+    interventi,
+    nomeAttivita: cache?.brandName || "Taskly",
+  });
 }
 
 export async function PUT(req: NextRequest, { params }: Ctx) {
