@@ -243,7 +243,7 @@ export default function ClientiPage() {
 
       {/* Nuovo cliente */}
       {modale && (
-        <div className="fixed inset-0 z-[60] bg-slate-900/50 flex items-center justify-center p-3 sm:p-4">
+        <div className="fixed inset-0 z-[60] !mt-0 bg-slate-900/50 flex items-center justify-center p-3 sm:p-4">
           <form onSubmit={salva} className="bg-white rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto px-6 pb-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between py-4 border-b border-slate-100 sticky top-0 bg-white z-10">
               <h3 className="font-bold text-slate-900 text-lg">Nuovo cliente</h3>
