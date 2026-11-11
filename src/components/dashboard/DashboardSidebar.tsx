@@ -1,5 +1,6 @@
 "use client";
 
+import SidebarGruppi, { ElementoMenu } from "@/components/dashboard/SidebarGruppi";
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -36,6 +37,16 @@ const baseNavLinks = [
   { href: "/dashboard/tecnici", label: "Tecnici & Mezzi", icon: Users },
   { href: "/dashboard/servizi", label: "Listino Interventi", icon: Layers },
   { href: "/dashboard/clienti", label: "Anagrafica Clienti", icon: UserCheck },
+];
+
+const vocePer = (href: string) => baseNavLinks.find((l) => l.href === href)!;
+
+// Le voci proprie del modulo sono raccolte in gruppi apribili: il menu mostra meno cose insieme
+const baseNavVoci: ElementoMenu[] = [
+  vocePer("/dashboard"),
+  { gruppo: "Interventi", icona: vocePer("/dashboard/interventi").icon, voci: [vocePer("/dashboard/interventi"), vocePer("/dashboard/calendario"), vocePer("/dashboard/rapportini"), vocePer("/dashboard/attivita")] },
+  { gruppo: "Squadra e listino", icona: vocePer("/dashboard/tecnici").icon, voci: [vocePer("/dashboard/tecnici"), vocePer("/dashboard/servizi")] },
+  vocePer("/dashboard/clienti"),
 ];
 
 const addonNavLinks = [
@@ -148,25 +159,15 @@ export default function DashboardSidebar() {
           <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 pb-1">
             Gestione Operativa
           </p>
-          {baseNavLinks.map((link) => {
-            const active = isActive(link.href);
-            const Icon = link.icon;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  active
-                    ? "bg-indigo-600 text-white font-bold shadow-md shadow-indigo-600/30"
-                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                }`}
-              >
-                <Icon className="w-4 h-4 shrink-0" />
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
+          <SidebarGruppi
+            elementi={baseNavVoci}
+            isActive={isActive}
+            onNavigate={() => setMobileOpen(false)}
+            attivo="bg-indigo-600 text-white font-semibold"
+            inattivo="text-slate-300 hover:bg-slate-800 hover:text-white"
+            chevron="text-slate-400"
+            linea="border-slate-700"
+          />
 
           {/* Add-ons Section */}
           {activeAddons.length > 0 && (
