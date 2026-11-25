@@ -1,5 +1,5 @@
 # Multi-stage Dockerfile per Next.js con SQLite (Taskly)
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
 
 # Installazione dipendenze di sistema necessarie per Prisma e SQLite
 RUN apk add --no-cache libc6-compat openssl
